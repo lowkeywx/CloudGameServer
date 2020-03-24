@@ -21,8 +21,8 @@ export class JobRemoter {
     constructor(private app: Application) {
 
     }
-    public async doJob () {
-        logger.info('start renderAgent!');
+    public async doJob (job: any) {
+        logger.info('[doJob][start renderAgent!]');
         return 'the job is doing.';
         //child_process.execFileSync('E:\\Z_DOWNLOAD\\tanks\\tanks.exe');
     }

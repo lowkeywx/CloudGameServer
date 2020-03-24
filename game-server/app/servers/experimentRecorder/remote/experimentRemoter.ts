@@ -36,7 +36,7 @@ export class experimentRemoter {
         }
         let expInfo = [];
         expInfo.push('tanks');
-        logger.info('expriment info list will be send.');
+        logger.info('[getAllExperimentBriefInfo][expriment info list will be send.]');
         return expInfo;
     }
 

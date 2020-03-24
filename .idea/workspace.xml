@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="" />
+    <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1ZVhQpDRlsxSx5AA8W082FvR2Q2" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -21,6 +30,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="D:\CloudGame\CloudGameServer\game-server\node_modules\typescript\lib" />
   </component>
   <component name="ServiceViewManager">
@@ -46,7 +56,8 @@
       <option name="presentableId" value="Default" />
       <updated>1584930154574</updated>
       <workItem from="1584930158296" duration="12438000" />
-      <workItem from="1584946420094" duration="10238000" />
+      <workItem from="1584946420094" duration="10677000" />
+      <workItem from="1585010487040" duration="10978000" />
     </task>
     <servers />
   </component>
@@ -54,17 +65,21 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1584946005627">
+    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585014150308">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1584946005627" />
+    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585014150308" />
     <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1584940615508">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1584940615508" />
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1584954373871">
+    <state x="2567" y="250" key="run.anything.popup" timestamp="1585017457620">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1584954373871" />
+    <state x="2567" y="250" key="run.anything.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585017457620" />
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1585017488427">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585017488427" />
   </component>
 </project>
