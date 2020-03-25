@@ -9,11 +9,13 @@ export default function (app: Application) {
     return new Handler(app);
 }
 
-class JobInfo {
+export class JobInfo {
     session: FrontendSession;
     jobType: string;
     experimentId: string;
     originalMsg: any;
+    jobId: number;
+    jobCreateTime: Date;
 }
 
 export class Handler {
@@ -22,17 +24,20 @@ export class Handler {
     tid: NodeJS.Timer = null;
     constructor(private app: Application) {
         this.flushInterval = 20;
+        this.jobs = new Array<JobInfo>();
         this.tid = setInterval(this._doJob.bind(this),this.flushInterval);
     }
     async doJob(msg:any,session: FrontendSession){
         if (!msg.jobType) return 'jobType is Invalid ';
         //应该先如队列，在update处理队列中的job请求
-        let job: JobInfo;
+        let job: JobInfo = new JobInfo();
         if (msg.jobType == 'experiment'){
             job.session = session;
             job.jobType = msg.jobType;
             job.experimentId = msg.experimentId;
             job.originalMsg = msg;
+            job.jobId = this.jobs.length + 1;
+            job.jobCreateTime = new Date();
         }else if (msg.jobType == 'computing'){
         }else {
         }

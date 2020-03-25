@@ -1,5 +1,7 @@
 import {Application, RemoterClass, FrontendSession, getLogger} from 'pinus';
-import * as child_process from "child_process";
+import {JobServerRecord, JobStatus} from "../../jobServerRecorder/remote/jobServerRecorderRemoter";
+import {JobManager} from "../../../service/jobManageService";
+import Timer = NodeJS.Timer;
 
 let logger = getLogger('pinus');
 
@@ -18,13 +20,23 @@ declare global {
 }
 
 export class JobRemoter {
+    private record:JobServerRecord;
+    private jobMgr: JobManager;
+    private ts: Timer;
+    readonly updateDiff: number = 1000;
     constructor(private app: Application) {
-
+        //这部分功能应该放到一个单独的plugin中
+        this.ts = setInterval(this.update.bind(this),this.updateDiff);
+        this.record = new JobServerRecord(this.app.serverId);
+        this.jobMgr = new JobManager(this.app);
+        this.jobMgr.init();
+    }
+    private async update(){
+        //await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo.toServer('jobServerRecorder',this.record);
     }
     public async doJob (job: any) {
-        logger.info('[doJob][start renderAgent!]');
+        this.jobMgr.storeJob(job);
         return 'the job is doing.';
-        //child_process.execFileSync('E:\\Z_DOWNLOAD\\tanks\\tanks.exe');
     }
-
+    //应该添加一个record改变的接口
 }

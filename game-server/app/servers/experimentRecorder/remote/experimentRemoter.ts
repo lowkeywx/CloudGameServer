@@ -21,20 +21,17 @@ export class experimentRemoter {
     experimentsRecord: Map<string, ExperimentRecord>;
     experimentService : ExperimentService;
     constructor(private app: Application) {
+        this.experimentsRecord = new Map<string, ExperimentRecord>();
         this.experimentService = expService(app);
     }
-    /**
-     *
-     * @param username
-     * @param password
-     */
-    public async getAllExperimentBriefInfo(schoolId : string) {
+    public async getAllExperimentBriefInfo(schoolId: string) {
         if (schoolId){
             //从数据库获取，根据学校id
         }else {
             //从数据库获取所有
         }
-        let expInfo = [];
+        //这里暂时只存名字, 以后会丰富数据结构
+        let expInfo:string[] = new Array<string>();
         expInfo.push('tanks');
         logger.info('[getAllExperimentBriefInfo][expriment info list will be send.]');
         return expInfo;
@@ -42,7 +39,7 @@ export class experimentRemoter {
 
     public async  IsMeetExperimentCondition(experimentId:any){
         if (!this.experimentsRecord[experimentId]){
-            let experiment: ExperimentRecord;
+            let experiment: ExperimentRecord = new ExperimentRecord();
             experiment.experimentId = experimentId;
             experiment.StartedCount = 1;
             this.experimentsRecord[experimentId] = experiment;
@@ -54,18 +51,18 @@ export class experimentRemoter {
 
     }
 
-    public async experimentShutdow(experimentId: string){
+    public async experimentShutdown(experimentId: string){
         if (!experimentId){
-            logger.error('[experimentShutdow][experimentId is invalid!]');
+            logger.error('[experimentShutdown][experimentId is invalid!]');
             return false;
         }
         let expRecord: ExperimentRecord = this.experimentsRecord[experimentId];
         if (!expRecord){
-            logger.error(`[experimentShutdow][do not find experimentRecord by id ${experimentId}]`);
+            logger.error(`[experimentShutdown][do not find experimentRecord by id ${experimentId}]`);
             return false;
         }
-        if (expRecord.StartedCount = 0){
-            logger.error('[experimentShutdow][no running ecperiment need to be shutdow!]');
+        if (expRecord.StartedCount == 0){
+            logger.error('[experimentShutdown][no running experiment need to be shutdown!]');
             return false;
         }
         expRecord.StartedCount -=1;

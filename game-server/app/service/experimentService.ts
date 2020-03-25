@@ -24,9 +24,10 @@ export class ExperimentService {
     experimentsCondition: Map<string,Condition>;
     constructor(private app: Application) {
         //一下数据应该从数据库读取
-        let condition: Condition;
+        let condition: Condition = new Condition();
         condition.durationTime = 1000 * 60 * 5;  //最大运行时间
         condition.maxRunningNum = 3;            //最大运行数量
+        this.experimentsCondition = new Map();
         this.experimentsCondition['tanks'] = condition;
     }
 
@@ -37,7 +38,7 @@ export class ExperimentService {
         let condition: Condition = this.experimentsCondition[experiment.experimentId];
         if (!condition) return false;
         if(experiment.StartedCount <= condition.maxRunningNum) return false;
-        let duaringTime: number = experiment.experimentTime.endTime.getTime() - experiment.experimentTime.startTime.getTime();
-        return duaringTime <= condition.durationTime;
+        let durationTime: number = experiment.experimentTime.endTime.getTime() - experiment.experimentTime.startTime.getTime();
+        return durationTime <= condition.durationTime;
    }
 }
