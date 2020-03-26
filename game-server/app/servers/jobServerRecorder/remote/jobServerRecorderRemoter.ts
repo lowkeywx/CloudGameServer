@@ -1,4 +1,5 @@
 import {Application, RemoterClass, FrontendSession, getLogger} from 'pinus';
+import Timer = NodeJS.Timer;
 
 let logger = getLogger('pinus');
 
@@ -16,7 +17,7 @@ declare global {
     }
 }
 
-export enum JobStatus {
+export enum JobServerState {
     JobStatus_Idle,
     JobStatus_Normal,
     JobStatus_Overload,
@@ -28,36 +29,57 @@ export enum JobStatus {
 export class JobServerRecord {
     serverId: string;
     processId: number;
-    status: JobStatus;//1空闲 2正常 3超载 4离线 5异常
+    state: JobServerState;//1空闲 2正常 3超载 4离线 5异常
     lastReportTime: number;
     startTime: number;
     workerCount: number;
     cupUsed: number;
     memoryUsed: number;
+    readonly invalidDiff: number;
     //这里暂时只传入id,以后有需求在穿Application
     constructor(serverId: string) {
+        this.invalidDiff = 1000 * 60;
         this.serverId = serverId;
         this.workerCount = 0;
         this.lastReportTime = 0;
-        this.status = JobStatus.JobStatus_OffLine;
+        this.state = JobServerState.JobStatus_OffLine;
         this.processId = 0;
+    }
+    public invalid(){
+        if (Date.now() - this.lastReportTime > this.invalidDiff){
+            this.state = JobServerState.JobStatus_Error;
+        }
+        return this.state <= 3;
     }
 }
 
 export class jobServerRecorderRemoter {
     private serverRecordList:JobServerRecord[];
+    readonly updateDiff: number;
+    private ts: Timer;
     constructor(private app: Application) {
+        this.updateDiff = 1000 * 10;
         this.serverRecordList = new Array<JobServerRecord>();
-        let serverList = this.app.getServersByType('job');
-        //这里可能需要改成foreach
-        // for (let server of serverList){
-        //     let serverNode: JobServerRecord = new JobServerRecord(this.app.serverId);
-        //     this.serverRecordList.push(serverNode);
-        // }
+        this.ts = setInterval(this.update.bind(this),this.updateDiff);
+    }
+    private update(){
+        for (let record of this.serverRecordList){
+            logger.info(`[update][serverId is : ${record.serverId}. server state: ${record.state}, last reportTime: ${record.lastReportTime}]`);
+            if (record.invalid()){
+
+            }
+        }
     }
     public async getBestServer () {
+        if (!this.serverRecordList.length){
+            let serverList = this.app.getServersByType('job');
+            for (let server of serverList){
+                let serverNode: JobServerRecord = new JobServerRecord(server.id);
+                this.serverRecordList.push(serverNode);
+            }
+        }
         for (let server of this.serverRecordList){
-            if(server.status <= 2){
+            if(server.state <= 2){
                 return server.serverId;
             }
         }
@@ -66,10 +88,18 @@ export class jobServerRecorderRemoter {
     }
 
     public async RecordServerInfo(serverInfo: JobServerRecord) {
-        for (let server of this.serverRecordList){
+        for (let i = 0; i < this.serverRecordList.length; i++){
+            logger.info(`[RecordServerInfo][receive report msg: serverId is : ${serverInfo.serverId}. state is : ${serverInfo.state}]`);
+            let server = this.serverRecordList[i];
             if(server.serverId == serverInfo.serverId){
-                server = serverInfo;
+                logger.info('[server][change server state!]');
+                serverInfo.lastReportTime = Date.now();
+                this.serverRecordList[i] = serverInfo;
             }
+        }
+
+        for (let server of this.serverRecordList){
+
         }
     }
 }

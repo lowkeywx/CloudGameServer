@@ -1,4 +1,4 @@
-import {Application, RemoterClass, FrontendSession, getLogger} from 'pinus';
+import {Application, FrontendSession, getLogger, RemoterClass} from 'pinus';
 import expService, {ExperimentRecord, ExperimentService} from "../../../service/experimentService";
 
 let logger = getLogger('pinus');
@@ -20,9 +20,13 @@ declare global {
 export class experimentRemoter {
     experimentsRecord: Map<string, ExperimentRecord>;
     experimentService : ExperimentService;
+    experimentsList: string[];
+
     constructor(private app: Application) {
         this.experimentsRecord = new Map<string, ExperimentRecord>();
         this.experimentService = expService(app);
+        this.experimentsList = new Array<string>();
+        this.experimentsList.push('tanks');
     }
     public async getAllExperimentBriefInfo(schoolId: string) {
         if (schoolId){
@@ -31,24 +35,27 @@ export class experimentRemoter {
             //从数据库获取所有
         }
         //这里暂时只存名字, 以后会丰富数据结构
-        let expInfo:string[] = new Array<string>();
-        expInfo.push('tanks');
         logger.info('[getAllExperimentBriefInfo][expriment info list will be send.]');
-        return expInfo;
+        return this.experimentsList;
     }
-
-    public async  IsMeetExperimentCondition(experimentId:any){
+    public async IsMeetExperimentCondition(experimentId: string){
+        if (!experimentId){
+            logger.info('[IsMeetExperimentCondition][--实验id为空!--]')
+            return false;
+        }
         if (!this.experimentsRecord[experimentId]){
+            logger.info('[IsMeetExperimentCondition][首次请求实验, 生成实验数据.]');
             let experiment: ExperimentRecord = new ExperimentRecord();
             experiment.experimentId = experimentId;
             experiment.StartedCount = 1;
             this.experimentsRecord[experimentId] = experiment;
-        }else {
+        }
+        if (await this.experimentService.checkExperimentCondition(this.experimentsRecord[experimentId])){
             let expRecord: ExperimentRecord = this.experimentsRecord[experimentId];
             expRecord.StartedCount += 1;
+            return true;
         }
-        return await this.experimentService.checkExperimentCondition(this.experimentsRecord[experimentId]);
-
+        return false;
     }
 
     public async experimentShutdown(experimentId: string){

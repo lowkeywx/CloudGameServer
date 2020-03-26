@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.proto.renderCommunicator";
+option java_outer_classname = "renderCommunicatorProto";
+option objc_class_prefix = "HLW";
+
+package renderCommunicator;
+
+// The greeting service definition.
+service JobGetter {
+  rpc GetJobInfo (JobRequest) returns (JobResponse) {}
+}
+
+// The request message containing the user's name.
+message JobRequest {
+  int32 renderProcessId = 1;
+  int32 workerId = 2;
+}
+
+// The response message containing the greetings
+message JobResponse {
+  int32 jobId = 1;
+  string experimentPath = 2;
+}
+
+service RenderInfoReport{
+    rpc ReportRenderInfo(RenderInfoRequest) returns (RenderInfoResponse) {}
+}
+
+message RenderInfoRequest{
+    int32 renderProcessId = 1;
+    int32 renderStatus = 2;
+    int32 reportType = 3;
+    int32 workerId = 4;
+}
+
+message RenderInfoResponse{
+    int32 code = 1;
+}

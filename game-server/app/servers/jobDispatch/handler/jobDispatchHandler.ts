@@ -1,73 +1,70 @@
-import {Application, FrontendSession, getLogger, scheduleJob} from 'pinus';
-import {Session} from "pinus/lib/index";
-import {ScheduleOptions} from "pinus/lib/interfaces/IPushScheduler";
-import {SID} from "pinus/lib/util/constants";
+import {Application, FrontendSession, getLogger, Session} from 'pinus';
+import {ExperimentJob} from "../../../service/experimentJob";
+import {JobType, WorkerJob} from "../../../service/jobManageService";
+import {S2CEmitEvent, S2CMsg} from "../../../../../shared/messageCode";
 
-let loger = getLogger("pinus");
+let logger = getLogger("pinus");
 
 export default function (app: Application) {
     return new Handler(app);
 }
 
-export class JobInfo {
-    session: FrontendSession;
-    jobType: string;
-    experimentId: string;
-    originalMsg: any;
-    jobId: number;
-    jobCreateTime: Date;
-}
-
 export class Handler {
-    flushInterval: number;
-    jobs: JobInfo[];   // sid -> msg queue
-    tid: NodeJS.Timer = null;
+    readonly flushInterval: number = 1000 * 10;
+    private jobs: WorkerJob[];
+    private tid: NodeJS.Timer = null;
     constructor(private app: Application) {
-        this.flushInterval = 20;
-        this.jobs = new Array<JobInfo>();
         this.tid = setInterval(this._doJob.bind(this),this.flushInterval);
+        this.jobs = new Array<WorkerJob>();
     }
     async doJob(msg:any,session: FrontendSession){
-        if (!msg.jobType) return 'jobType is Invalid ';
+        if (typeof msg.jobType !== 'number') {
+            logger.info('[doJob][无效参数: jobType]');
+            return {code: S2CMsg.invalidArgs_jobType};
+        }
+        if (!msg.experimentId){
+            logger.info('[doJob][无效参数: experimentId]');
+            return {code: S2CMsg.invalidArgs_expId};
+        }
         //应该先如队列，在update处理队列中的job请求
-        let job: JobInfo = new JobInfo();
-        if (msg.jobType == 'experiment'){
-            job.session = session;
+        let job: ExperimentJob = new ExperimentJob(null);
+        if (msg.jobType == JobType.JobType_Experiment){
+            job.uid = session.uid;
+            job.frontendId = session.frontendId;
+            job.sid = session.id;
             job.jobType = msg.jobType;
-            job.experimentId = msg.experimentId;
-            job.originalMsg = msg;
-            job.jobId = this.jobs.length + 1;
-            job.jobCreateTime = new Date();
-        }else if (msg.jobType == 'computing'){
+            job.expId = msg.experimentId;
+        }else if (msg.jobType == JobType.JobType_Calculate){
         }else {
         }
         this.jobs.push(job);
-        this.showMessage(null,'已生成任务数据,服务器正在处理.',session.id,null);
+        this.showMessage(null,S2CMsg.jobInit,session.frontendId,session.uid,null);
         return true;
     }
-    private showMessage(route: string, msg: any, sid: number, cb: (err?: Error, resp ?: any) => void){
-        let connector = this.app.components.__connector__;
-        let opts = { type: 'push', userOptions: {}, isPush: true};
-        route = route || 'showInClient';
-        connector.send(null,route,msg,[sid],opts as any,cb);
+    private showMessage(route: string, msg: any, frontendId: string, uid: string, cb: (err?: Error, resp ?: any) => void){
+        route = route || S2CEmitEvent.showInClient;
+        let targets = {uid: uid,sid: frontendId};
+        let channelService = this.app.channelService.apushMessageByUids(route,{code: msg},[targets],()=>{});
     }
     private async _doJob(){
         if (!this.jobs.length) return;
-        let job: JobInfo = this.jobs[0];
-        if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(job.session,job.experimentId)){
-            this.showMessage(null,`超过实验最大请求数,您前面还有${this.jobs.length}人`,job.session.id,null);
-            this.jobs.shift();
+        let job: WorkerJob = this.jobs[0];
+        this.jobs.shift();
+        //应该提供一个conditionService以后再完善
+        let expJob = <ExperimentJob>job;
+        if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,expJob.expId)){
+            this.showMessage(null,S2CMsg.maxJob,job.frontendId,job.uid,null);
             this.jobs.push(job);
             return false;
         }
-        let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(job.session);
+        let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
         if (!bestServer){
-            this.showMessage(null,`无可用服务器,请耐心等待. 您前面还有${this.jobs.length}人`,job.session.id,null);
+            this.showMessage(null,S2CMsg.noIdleServer,job.frontendId,job.uid,null);
+            this.jobs.push(job);
             return false;
         }
         //push to queue
-        loger.info(`[doJob][the best server is ${bestServer}]`);
-        this.jobs.shift();
+        logger.info(`[doJob][the best server is ${bestServer}]`);
         return this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, job);
     }
 }

@@ -1,7 +1,8 @@
 import {Application} from 'pinus';
-import  {EventEmitter} from 'events';
+import {EventEmitter} from 'events';
 import {JobWorker, WorkerManager} from "./workerManageService";
-import {WorkerJob} from "./jobManageService";
+import {JobType, WorkerJob} from "./jobManageService";
+import {ExperimentJob} from "./experimentJob";
 
 var grpc = require('grpc');
 var PROTO_PATH = 'D:\\CloudGame\\CloudGameServer\\shared\\renderCommunicator.proto';
@@ -36,7 +37,13 @@ export class WorkerCommunicator extends EventEmitter{
     getJobInfo(call, callback){
         let workerId = call.request.workerId;
         let job: WorkerJob = this.workerMgr.getWorker(workerId).getJob();
-        callback(null,{'jobId': job.jobId,'experimentPath': job.expPath});
+        let expJob: ExperimentJob;
+        if (job.jobType == JobType.JobType_Experiment){
+            expJob = <ExperimentJob>job;
+        }else if (job.jobType == JobType.JobType_Calculate){
+
+        }
+        callback(null,{'jobId': job.jobId,'experimentPath': expJob ? expJob.expPath : ''});
     }
 
     ReportRenderInfo(call, callback){

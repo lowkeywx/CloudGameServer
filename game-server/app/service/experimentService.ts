@@ -1,4 +1,6 @@
-import {Application, RemoterClass, FrontendSession} from 'pinus';
+import {Application, RemoterClass, FrontendSession, getLogger} from 'pinus';
+
+let logger = getLogger('pinus');
 
 export default function (app: Application) {
     return new ExperimentService(app);
@@ -33,11 +35,12 @@ export class ExperimentService {
 
    async checkExperimentCondition(experiment: ExperimentRecord) {
         if (!experiment || !experiment.experimentId){
+            logger.info('[checkExperimentCondition][实验记录不存在或实验id无效.]')
             return false;
         }
         let condition: Condition = this.experimentsCondition[experiment.experimentId];
         if (!condition) return false;
-        if(experiment.StartedCount <= condition.maxRunningNum) return false;
+        if(experiment.StartedCount <= condition.maxRunningNum) return true;
         let durationTime: number = experiment.experimentTime.endTime.getTime() - experiment.experimentTime.startTime.getTime();
         return durationTime <= condition.durationTime;
    }

@@ -2,16 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/game-server/app/service/experimentJob.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shared/messageCode.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/renderCommunicator.proto" beforeDir="false" afterPath="$PROJECT_DIR$/shared/renderCommunicator.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="CloudGameServer" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -26,7 +44,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="E:/A_DEVELOPMENT_ENVIRONMENT/A_JavascriptDE/Electron/chatofpomelo-websocket" />
+    <property name="last_opened_file_path" value="E:/A_DEVELOPMENT_ENVIRONMENT/A_JavascriptDE/Electron/lordofpomelo" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -57,7 +75,10 @@
       <updated>1584930154574</updated>
       <workItem from="1584930158296" duration="12438000" />
       <workItem from="1584946420094" duration="10677000" />
-      <workItem from="1585010487040" duration="10978000" />
+      <workItem from="1585010487040" duration="23121000" />
+      <workItem from="1585096872989" duration="26138000" />
+      <workItem from="1585182592542" duration="15366000" />
+      <workItem from="1585203291916" duration="13207000" />
     </task>
     <servers />
   </component>
@@ -65,21 +86,37 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585014150308">
+    <state x="2365" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585103553160">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585014150308" />
-    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1584940615508">
+    <state x="2365" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585103553160" />
+    <state x="2594" y="342" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1585032420998">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1584940615508" />
-    <state x="2567" y="250" key="run.anything.popup" timestamp="1585017457620">
+    <state x="2594" y="342" key="#com.intellij.fileTypes.FileTypeChooser/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585032420998" />
+    <state x="2511" y="129" key="CommitChangelistDialog2" timestamp="1585214152968">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2567" y="250" key="run.anything.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585017457620" />
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1585017488427">
+    <state x="2511" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585214152968" />
+    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585203343851">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585017488427" />
+    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585203343851" />
+    <state x="2632" y="281" width="582" height="524" key="StructurePopup" timestamp="1585204104898">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585204104898" />
+    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1585205418276">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585205418276" />
+    <state x="2567" y="250" key="run.anything.popup" timestamp="1585208249409">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2567" y="250" key="run.anything.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585208249409" />
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1585203039498">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585203039498" />
   </component>
 </project>

@@ -1,4 +1,5 @@
 import {Application, FrontendSession, getLogger} from 'pinus';
+import {S2CMsg} from "../../../../../shared/messageCode";
 
 let loger = getLogger('pinus');
 
@@ -14,16 +15,16 @@ export class Handler {
     async entry(msg: any, session: FrontendSession) {
         loger.info(`calling entryHandler.entry. userName : ${msg.userName}.`);
         if (await this.app.rpc.auth.authRemoter.auth(session, msg.userName,msg.password)){
-            session.set("userName", msg.userName);
-            session.set("password", msg.password);
-            session.set("passAuth", true);
-            session.pushAll(()=>{});
-            return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(session,msg.schollId);
+            session.bind(msg.userName,(err)=>{
+                if (!err){
+                }
+            });
+            return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(null,msg.schollId);
         }
-        return ;
+        return S2CMsg.authFail;
     }
 
-    async leave(msg:any,session:FrontendSession){
+    async leave(msg:any,session: FrontendSession){
 
     }
 
