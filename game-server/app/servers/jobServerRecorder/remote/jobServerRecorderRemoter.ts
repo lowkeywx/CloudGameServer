@@ -45,11 +45,11 @@ export class JobServerRecord {
         this.state = JobServerState.JobStatus_OffLine;
         this.processId = 0;
     }
-    public invalid(){
-        if (Date.now() - this.lastReportTime > this.invalidDiff){
-            this.state = JobServerState.JobStatus_Error;
+    static invalid(record: JobServerRecord){
+        if (Date.now() - record.lastReportTime > record.invalidDiff){
+            record.state = JobServerState.JobStatus_Error;
         }
-        return this.state <= 3;
+        return record.state <= 3;
     }
 }
 
@@ -58,14 +58,16 @@ export class jobServerRecorderRemoter {
     readonly updateDiff: number;
     private ts: Timer;
     constructor(private app: Application) {
-        this.updateDiff = 1000 * 10;
         this.serverRecordList = new Array<JobServerRecord>();
-        this.ts = setInterval(this.update.bind(this),this.updateDiff);
+        this.updateDiff = 1000 * 10;
+        if (this.app.serverType == 'jobServerRecorder'){
+            this.ts = setInterval(this.update.bind(this),this.updateDiff);
+        }
     }
     private update(){
         for (let record of this.serverRecordList){
             logger.info(`[update][serverId is : ${record.serverId}. server state: ${record.state}, last reportTime: ${record.lastReportTime}]`);
-            if (record.invalid()){
+            if (JobServerRecord.invalid(record)){
 
             }
         }
@@ -89,10 +91,10 @@ export class jobServerRecorderRemoter {
 
     public async RecordServerInfo(serverInfo: JobServerRecord) {
         for (let i = 0; i < this.serverRecordList.length; i++){
-            logger.info(`[RecordServerInfo][receive report msg: serverId is : ${serverInfo.serverId}. state is : ${serverInfo.state}]`);
+            //logger.info(`[RecordServerInfo][receive report msg: serverId is : ${serverInfo.serverId}. state is : ${serverInfo.state}]`);
             let server = this.serverRecordList[i];
             if(server.serverId == serverInfo.serverId){
-                logger.info('[server][change server state!]');
+                //logger.info('[server][change server state!]');
                 serverInfo.lastReportTime = Date.now();
                 this.serverRecordList[i] = serverInfo;
             }

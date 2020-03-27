@@ -19,6 +19,9 @@ export class Handler {
                 if (!err){
                 }
             });
+            session.on('closed',function () {
+                this.app.rpc.job.jobRemoter.onClientClose(null,session.id);
+            }.bind(this));
             return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(null,msg.schollId);
         }
         return S2CMsg.authFail;

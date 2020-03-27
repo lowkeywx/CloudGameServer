@@ -1,10 +1,7 @@
-import {Application, RemoterClass, FrontendSession, getLogger} from 'pinus';
+import {Application, getLogger} from 'pinus';
+import {IComponent} from "pinus/lib/interfaces/IComponent";
 
 let logger = getLogger('pinus');
-
-export default function (app: Application) {
-    return new ExperimentService(app);
-}
 
 class ExperimentTime {
     startTime: Date;
@@ -22,15 +19,35 @@ export class ExperimentRecord{
 
 }
 
-export class ExperimentService {
+export interface ExperimentServiceOptions {
+    maxRunningNum?: number;
+    durationTime?: number;
+}
+
+export class ExperimentService implements IComponent{
+    name:string;
+    app: Application;
+    opts: ExperimentServiceOptions;
     experimentsCondition: Map<string,Condition>;
-    constructor(private app: Application) {
+    constructor(app: Application, opts ?: ExperimentServiceOptions) {
+        this.app = app;
+        this.opts = opts || {maxRunningNum: 3,durationTime: 1000 * 60 * 5};
+        this.experimentsCondition = new Map();
+    }
+    beforeStart(cb: () => void){
+        process.nextTick(cb);
+    }
+    start(cb: () => void) {
         //一下数据应该从数据库读取
         let condition: Condition = new Condition();
-        condition.durationTime = 1000 * 60 * 5;  //最大运行时间
-        condition.maxRunningNum = 3;            //最大运行数量
-        this.experimentsCondition = new Map();
+        condition.durationTime = this.opts.durationTime;  //最大运行时间
+        condition.maxRunningNum = this.opts.maxRunningNum;            //最大运行数量
         this.experimentsCondition['tanks'] = condition;
+        process.nextTick(cb);
+
+    }
+
+    afterStartAll(){
     }
 
    async checkExperimentCondition(experiment: ExperimentRecord) {

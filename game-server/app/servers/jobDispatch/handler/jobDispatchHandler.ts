@@ -10,12 +10,14 @@ export default function (app: Application) {
 }
 
 export class Handler {
-    readonly flushInterval: number = 1000 * 10;
+    readonly flushInterval: number = 1000 * 5;
     private jobs: WorkerJob[];
     private tid: NodeJS.Timer = null;
     constructor(private app: Application) {
-        this.tid = setInterval(this._doJob.bind(this),this.flushInterval);
         this.jobs = new Array<WorkerJob>();
+        if (this.app.serverType == 'jobDispatch'){
+            this.tid = setInterval(this._doJob.bind(this),this.flushInterval);
+        }
     }
     async doJob(msg:any,session: FrontendSession){
         if (typeof msg.jobType !== 'number') {
@@ -65,6 +67,6 @@ export class Handler {
         }
         //push to queue
         logger.info(`[doJob][the best server is ${bestServer}]`);
-        return this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, job);
+        this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, job);
     }
 }

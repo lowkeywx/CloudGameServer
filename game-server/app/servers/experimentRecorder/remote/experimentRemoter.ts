@@ -1,5 +1,5 @@
 import {Application, FrontendSession, getLogger, RemoterClass} from 'pinus';
-import expService, {ExperimentRecord, ExperimentService} from "../../../service/experimentService";
+import {ExperimentRecord, ExperimentService} from "../../../service/experimentService";
 
 let logger = getLogger('pinus');
 
@@ -24,7 +24,7 @@ export class experimentRemoter {
 
     constructor(private app: Application) {
         this.experimentsRecord = new Map<string, ExperimentRecord>();
-        this.experimentService = expService(app);
+        this.experimentService = this.app.get('experimentCondition');
         this.experimentsList = new Array<string>();
         this.experimentsList.push('tanks');
     }

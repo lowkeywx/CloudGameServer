@@ -1,7 +1,10 @@
-import {Application, FrontendSession, Session} from 'pinus';
+import {Application, getLogger} from 'pinus';
 import Timer = NodeJS.Timer;
-import {JobWorker, JobWorkerEvent, WorkerManager} from "./workerManageService";
+import {JobWorker, JobWorkerEvent, WorkerManagerService} from "./workerManageService";
 import {EventEmitter} from 'events';
+import {IComponent} from "pinus/lib/interfaces/IComponent";
+
+let logger = getLogger('pinus');
 
 export enum WorkerJobEvent{
     jobFail = 'jobFail',
@@ -25,14 +28,14 @@ export enum JobType {
 
 export class WorkerJob {
     //job还需要和experimentRecord进行绑定
-    constructor(manager?: JobManager) {
+    constructor(manager?: JobManageService) {
         if (!manager) {
-            this.setState(WorkerJobState.JobState_NotInit);
+            this.state = WorkerJobState.JobState_NotInit;
             return;
         }
         this.jobMgr = manager;
         this.jobId = this.jobMgr.getJobsCount();
-        this.setState(WorkerJobState.JobState_Init);
+        this.state = WorkerJobState.JobState_Init;
     }
     jobId: number;
     jobType: JobType;
@@ -41,53 +44,81 @@ export class WorkerJob {
     sid: number;
     worker: JobWorker;
     private state: WorkerJobState;
-    private jobMgr: JobManager;
+    private jobMgr: JobManageService;
     private beginTime: number;
     private endTime: number;
-    public getState(){
-        return this.state;
+    static getState(job: WorkerJob){
+        return job.state;
     }
-    public setState(state: WorkerJobState){
-        this.state = state;
+    static setState(job: WorkerJob,state: WorkerJobState){
+        job.state = state;
     }
-    public initIfNeed(manager: JobManager){
-        this.jobMgr = manager;
-        this.jobId = this.jobMgr.getJobsCount();
-        this.setState(WorkerJobState.JobState_Init);
+    static initIfNeed(job: WorkerJob,manager: JobManageService){
+        job.jobMgr = manager;
+        job.jobId = job.jobMgr.getJobsCount();
+        job.state = WorkerJobState.JobState_Init;
     }
-    public begin(){
-        this.beginTime = Date.now();
-        this.state = WorkerJobState.JobState_Doing;
+    static begin(job: WorkerJob){
+        job.beginTime = Date.now();
+        job.state = WorkerJobState.JobState_Doing;
     }
-    public stop(){
-        this.endTime = Date.now();
-        this.state = WorkerJobState.JobState_Finish;
+    static stop(job: WorkerJob){
+        job.endTime = Date.now();
+        job.state = WorkerJobState.JobState_Finish;
+    }
+    static isRawJob(job: WorkerJob){
+        return job.state === WorkerJobState.JobState_Init;
+    }
+    static isFailed(job: WorkerJob){
+        return job.state === WorkerJobState.JobState_Fail;
     }
 }
+
+export interface JobManagerServiceOptions {
+    updateDiff?: number;
+    maxJob?: number;
+}
 //这里应该写成父类,父类不具有update只有简单的创建job和存储功能,用来前端服务器使用. 后端丰富update和workerMgr
-export class JobManager extends EventEmitter{
-    readonly name: string = 'JobManager';
+export class JobManageService extends EventEmitter implements IComponent{
+    name: string;
+    app: Application;
+    opts: JobManagerServiceOptions;
     private jobList: WorkerJob[];
     private ts: Timer;
-    private workerMgr: WorkerManager;
+    private workerMgr: WorkerManagerService;
     private updateDiff: number;
-    constructor(private app: Application) {
+    constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
-        this.app.set(this.name,this);
-        this.updateDiff = 1000 * 2;
+        this.app = app;
+        this.opts = opts || {maxJob: 5,updateDiff: 1000 * 5};
         this.jobList = new Array<WorkerJob>();
-        this.workerMgr = new WorkerManager(this.app);
+        logger.info('[JobManageService][加载组件,组件初始化成功]');
+        this.workerMgr = this.app.get('WorkerManagement');
     }
-    public init(){
+    // beforeStart(cb: () => void){
+    //
+    // }
+    start(cb: () => void) {
+        //这里获得workerMgr
+        this.workerMgr.on(JobWorkerEvent.workerCreated,this.onWorkerCreate.bind(this));
+        this.workerMgr.on(JobWorkerEvent.workerInvalid,this.onWorkerInvalid.bind(this));
+        process.nextTick(cb);
+    }
+
+    afterStartAll(){
         this.ts = setInterval(this.update.bind(this),this.updateDiff);
-        this.workerMgr.init();
-        this.exportEvent(this.workerMgr,JobWorkerEvent.workerInvalid,WorkerJobEvent.jobFail);
-        this.exportEvent(this.workerMgr,JobWorkerEvent.workerCreated,WorkerJobEvent.jobBindWorker);
     }
-    public getJobsCount(){
+    //这里需要调整,至少改成getJobsDoing()
+    getJobsCount(){
+        // let count = 0;
+        // for (let job of this.jobList){
+        //     if (WorkerJob.isRawJob(job)){
+        //         count++;
+        //     }
+        // }
         return this.jobList.length;
     }
-    public getJob(id: number = -1){
+    getJob(id: number = -1){
         for (let job of this.jobList){
             if (job.jobId === id){
                 return job;
@@ -95,27 +126,51 @@ export class JobManager extends EventEmitter{
         }
         return new WorkerJob(this);
     }
-    private update(){
-        for (let job of this.jobList){
-            if (job.getState() === WorkerJobState.JobState_Init){
+    update(){
+        for (let i = 0; i < this.jobList.length; i++){
+            let job = this.jobList[i];
+            if (WorkerJob.getState(job) === WorkerJobState.JobState_Init){
+                logger.info('[update][任务数据正常, 开始创建工作者.]')
                 this.workerMgr.createWorkerFor(job);
+                WorkerJob.setState(job,WorkerJobState.JobState_Ready);
             }
         }
     }
-    public storeJob(job: WorkerJob){
-        if (job.getState() == WorkerJobState.JobState_NotInit) {
-            job.initIfNeed(this);
+    async storeJob(job: WorkerJob){
+        logger.info('[storeJob][收到任务将存入队列, 下一帧开始处理.]')
+        if (WorkerJob.getState(job) == WorkerJobState.JobState_NotInit) {
+            WorkerJob.initIfNeed(job,this);
         }
         this.jobList.push(job);
+        return {jobId: job.jobId, sessionId: job.sid};
     }
-    private exportEvent(source: EventEmitter,inEvent: string,outEvent: string){
-        source.on(inEvent,function (worker: JobWorker) {
-            if (inEvent == WorkerJobEvent.jobBindWorker){
-                worker.job.worker = worker;
-            }else if(inEvent == WorkerJobEvent.jobFail){
-                worker.job.setState(WorkerJobState.JobState_Fail);
+    async stopJob(jobId : number){
+        for (let i = 0; i < this.jobList.length; i++){
+            let job = this.jobList[i];
+            if (job.jobId == jobId){
+                this.jobList.splice(i,1);
+                this.workerMgr.stopJob(job.worker.workerId);
             }
-            this.emit(outEvent, worker.job);
-        }.bind(this));
+        }
     }
+    onWorkerCreate(worker: JobWorker){
+        worker.job.worker = worker;
+        this.emit(WorkerJobEvent.jobBindWorker,worker.job);
+    }
+    onWorkerInvalid(worker: JobWorker){
+        logger.info('[onWorkerInvalid][收到工作者失效信号, 处理关联任务.]')
+        WorkerJob.setState(worker.job,WorkerJobState.JobState_Fail);
+        this.jobList.splice(worker.job.jobId,1);
+        this.emit(WorkerJobEvent.jobFail,worker.job);
+    }
+    // exportEvent(source: EventEmitter,inEvent: string,outEvent: string){
+    //     source.on(inEvent,function () {
+    //         if (inEvent == WorkerJobEvent.jobBindWorker){
+    //
+    //         }else if(inEvent == WorkerJobEvent.jobFail){
+    //
+    //         }
+    //         this.emit(outEvent, worker.job);
+    //     }.bind(this));
+    // }
 }

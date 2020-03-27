@@ -1,5 +1,9 @@
 import { pinus } from 'pinus';
 import { preload } from './preload';
+import {JobManagement} from "./app/components/jobManagement";
+import {WorkerCommunication} from "./app/components/workerCommunication";
+import {WorkerManagement} from "./app/components/workerManagement";
+import {ExperimentCondition} from "./app/components/experimentCondition";
 
 /**
  *  替换全局Promise
@@ -30,6 +34,16 @@ app.configure('production|development', 'gate', function () {
             connector: pinus.connectors.hybridconnector,
             useProtobuf: true
         });
+});
+
+app.configure('production|development', 'job', function () {
+    app.load(WorkerManagement);
+    app.load(JobManagement);
+    app.load(WorkerCommunication);
+});
+
+app.configure('production|development', 'experimentRecorder', function () {
+    app.load(ExperimentCondition);
 });
 
 // start app

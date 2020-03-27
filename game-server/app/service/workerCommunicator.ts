@@ -1,26 +1,40 @@
 import {Application} from 'pinus';
 import {EventEmitter} from 'events';
-import {JobWorker, WorkerManager} from "./workerManageService";
+import {JobWorker, WorkerManagerService} from "./workerManageService";
 import {JobType, WorkerJob} from "./jobManageService";
 import {ExperimentJob} from "./experimentJob";
+import {IComponent} from "pinus/lib/interfaces/IComponent";
 
 var grpc = require('grpc');
 var PROTO_PATH = 'D:\\CloudGame\\CloudGameServer\\shared\\renderCommunicator.proto';
 //var renderCommunicator_proto = grpc.load(PROTO_PATH).renderCommunicator;
 
-export class WorkerCommunicator extends EventEmitter{
-    readonly name: string = 'WorkerCommunicator';
-    private updateDiff: number = 1000;
+export interface WorkerCommunicatorOptions {
+    updateDiff?: number;
+}
+
+export class WorkerCommunicator extends EventEmitter implements IComponent{
+    name: string;
+    app: Application;
+    opts: WorkerCommunicatorOptions;
     private server: any;
-    private workerMgr: WorkerManager;
-    constructor(private app: Application) {
+    private workerMgr: WorkerManagerService;
+    constructor(app: Application, opts ?: WorkerCommunicatorOptions) {
         super();
-        this.app.set(this.name,this);
+        this.app = app;
+        this.opts = opts || {updateDiff: 1000 * 5};
+        this.workerMgr = this.app.get('WorkerManagement');
     }
-    public init(){
-        setInterval(this.update.bind(this),this.updateDiff);
+    // beforeStart(cb: () => void){
+    //
+    // }
+    start(cb: () => void) {
+        //这里获得workerMgr
         this.startRPCServer();
-        this.workerMgr = this.app.get('WorkerManager');
+        process.nextTick(cb);
+    }
+    afterStartAll(){
+        setInterval(this.update.bind(this),this.opts.updateDiff);
     }
     private startRPCServer(){
         // this.server = new grpc.Server();

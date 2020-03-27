@@ -1,9 +1,9 @@
-import {JobManager, WorkerJob} from "./jobManageService";
+import {JobManageService, WorkerJob} from "./jobManageService";
 
 export class ExperimentJob extends WorkerJob{
     expPath: string;
     expId: string;
-    constructor(manager: JobManager) {
+    constructor(manager: JobManageService) {
         super(manager);
     }
 }
