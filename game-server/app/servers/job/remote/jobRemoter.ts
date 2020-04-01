@@ -37,16 +37,16 @@ export class JobRemoter {
             this.app.get('JobManagement').on(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
         }
     }
-    private sendMessage(job: WorkerJob,msg: any){
+    private sendMessage(job: WorkerJob,code: any,msg: any){
         let channelService = this.app.channelService;
         let targets = {uid: job.uid,sid: job.frontendId};
         //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
-        channelService.pushMessageByUids(S2CEmitEvent.jobMsg,{code: msg},[targets],()=>{});
+        channelService.pushMessageByUids(S2CEmitEvent.jobMsg,{code: code,msg:msg},[targets],()=>{});
     }
     private onJobFailed(job: WorkerJob){
         //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
         logger.info(`[sendMessage][任务处理失败, 现有任务数量: ${this.jobMgr.getJobsCount()}]`);
-        this.sendMessage(job,S2CMsg.jobFail);
+        this.sendMessage(job,S2CMsg.jobFail,"");
         this.app.rpc.experimentRecorder.experimentRemoter.experimentShutdown(null,(<ExperimentJob>job).expId);
         //这里以后会给jobRecorder服务器发送任务记录
         //通知connectorServer关闭链接
@@ -58,7 +58,7 @@ export class JobRemoter {
         if (!this.jobMgr) return;
         if (this.jobMgr.getJobsCount() == 0){
             this.record.state = JobServerState.JobStatus_Idle;
-        }else if (this.jobMgr.getJobsCount() < 2){
+        }else if (this.jobMgr.getJobsCount() <= 2){
             this.record.state = JobServerState.JobStatus_Normal;
         }else if (this.jobMgr.getJobsCount() > 2){
             this.record.state = JobServerState.JobStatus_Overload;
@@ -69,7 +69,7 @@ export class JobRemoter {
         logger.info('[doJob][收到新的任务,加入到任务队列,下一次循环处理.]')
         let info = this.jobMgr.storeJob(job);
         this.jobSession.push(info);
-        this.sendMessage(job,S2CMsg.jobDispatched);
+        this.sendMessage(job,S2CMsg.jobDispatched,info["jobId"]);
     }
     public async onClientClose(sessionId: string){
         for (let info of this.jobSession){

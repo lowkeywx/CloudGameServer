@@ -29,3 +29,17 @@ http://127.0.0.1:3001/index.html
 3、按照正常流程启动游戏服
 4、在“调试”界面，选择Attach To Connector或Attach To Master
 5、按F5把调试器挂上去，然后就可以断点调试了。
+
+
+目前服务器分类还不是很明确,主要服务器类型包括: gate auth connector jobRecorder 
+experimentRecorder condition experiment jobDispatcher job.
+gate: 分配可用connector
+auth: 用户验证
+connector: 维护用户连接,转发后端消息
+jobRecorder: 记录任务过程信息
+experimentRecorder: 记录实验过程信息, 这个对应不同的job还会有不同类型的服务器出现
+conditions: 验证job条件
+experiment: 实验基本信息
+jobDispatcher: 分发任务
+job: 接收并处理任务
+jobServerRecorder: 记录job服务器状态

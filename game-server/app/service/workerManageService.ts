@@ -4,9 +4,9 @@ import {WorkerJob, WorkerJobState} from "./jobManageService";
 import {EventEmitter} from 'events';
 import {IComponent} from "pinus/lib/interfaces/IComponent";
 import Timer = NodeJS.Timer;
+let cmd=require('node-cmd');
 
 let logger = getLogger('pinus');
-
 export enum JobWorkerEvent {
     workerInvalid = 'workerInvalid',
     workerCreated = 'workerCreated'
@@ -20,16 +20,19 @@ enum WorkerState {
 
 export class JobWorker {
     constructor(manager: WorkerManagerService) {
-        this.appPath = 'E:\\Z_DOWNLOAD\\tanks\\tanks.exe';
+        //this.appPath = 'E:\\Z_DOWNLOAD\\tanks\\tanks.exe';
+        this.appPath = "D:\\VSProject\\AppAgent\\output\\x64\\Debug\\AppAgent.exe";
+        this.workPath = "cd D:\\VSProject\\AppAgent\\output\\x64\\Debug";
         this.state = WorkerState.WorkerState_Init;
         this.workerMgr = manager;
         this.stopImmediate = false;
-        this.workerId = this.workerMgr.getWorkerCount() + 1;
+        this.workerId = this.workerMgr.getWorkerCount();
     }
     job: WorkerJob;
     readonly workerId: number;
     private processId: number;
     readonly appPath: string;
+    readonly workPath: string;
     private startTime: number;
     private state: WorkerState;
     private startArgs: any;
@@ -39,8 +42,38 @@ export class JobWorker {
     private needClean: boolean;
     readonly invalidTimeDiff = 1000 * 5;
     public start(){
+        logger.info(`[start][即将启动worker程序.]`);
         this.state = WorkerState.WorkerState_Start;
-        child_process.execFile(this.appPath,this.startArgs); //这里除了端口id之外还可以发送jobid
+        child_process.exec(`${this.appPath} ${this.job.jobId} ${this.workerId}`,function (error,stdOut,stdErr) {
+            logger.log('========================= :\n\n',error);
+            logger.log('========================= :\n\n',stdOut);
+            logger.log('========================= :\n\n',stdErr);
+        }); //这里除了端口id之外还可以发送jobid
+        //child_process.exec(`${this.appPath} ${this.job.jobId} ${this.workerId}`); //这里除了端口id之外还可以发送jobid
+        // child_process.execFile('cmd.exe',[this.appPath,`-w ${this.workerId}`,`-j ${this.job.jobId}`],function (data) {
+        //     logger.info(`[start][worker程序已启动,请查看启动情况.]`);
+        // }.bind(this));
+        //child_process.exec(this.workPath); //这里除了端口id之外还可以发送jobid
+        // cmd.get(`${this.workPath}
+        //         d:
+        //         ./AppAgent.exe -w ${this.workerId} -j ${this.job.jobId}
+        // `,function (err,data,stdErr) {
+        //     if (!err) {
+        //         logger.log('the node-cmd cloned dir contains these files :\n\n',data)
+        //     } else {
+        //         logger.log('error', err)
+        //     }
+        // });
+        // cmd.get(`d:
+        // cd "D:/VSProject/AppAgent/output/x64/Debug"
+        // AppAgent.exe -w ${this.workerId} -j ${this.job.jobId}`,function (err,data,stdErr) {
+        //          if (!err) {
+        //              logger.log('the node-cmd cloned dir contains these files :\n\n',data)
+        //          } else {
+        //              logger.log('error', err)
+        //          }
+        // });
+
         this.startTime = Date.now();
         this.lastChangeTime = this.startTime;
     }

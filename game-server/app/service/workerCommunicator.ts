@@ -1,13 +1,26 @@
-import {Application} from 'pinus';
+import {Application, getLogger} from 'pinus';
 import {EventEmitter} from 'events';
 import {JobWorker, WorkerManagerService} from "./workerManageService";
 import {JobType, WorkerJob} from "./jobManageService";
 import {ExperimentJob} from "./experimentJob";
 import {IComponent} from "pinus/lib/interfaces/IComponent";
 
-var grpc = require('grpc');
+let logger = getLogger('pinus');
+
 var PROTO_PATH = 'D:\\CloudGame\\CloudGameServer\\shared\\renderCommunicator.proto';
-//var renderCommunicator_proto = grpc.load(PROTO_PATH).renderCommunicator;
+var grpc = require('grpc');
+var protoLoader = require('@grpc/proto-loader');
+
+var packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true
+    });
+
+var renderCommunicator_proto = grpc.loadPackageDefinition(packageDefinition).renderCommunicator;
 
 export interface WorkerCommunicatorOptions {
     updateDiff?: number;
@@ -23,13 +36,13 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
         super();
         this.app = app;
         this.opts = opts || {updateDiff: 1000 * 5};
-        this.workerMgr = this.app.get('WorkerManagement');
     }
     // beforeStart(cb: () => void){
     //
     // }
     start(cb: () => void) {
         //这里获得workerMgr
+        this.workerMgr = this.app.get('WorkerManagement');
         this.startRPCServer();
         process.nextTick(cb);
     }
@@ -37,11 +50,11 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
         setInterval(this.update.bind(this),this.opts.updateDiff);
     }
     private startRPCServer(){
-        // this.server = new grpc.Server();
-        // this.server.addService(renderCommunicator_proto.JobGetter.service, {GetJobInfo: this.getJobInfo});
-        // this.server.addService(renderCommunicator_proto.RenderInfoReport.service, {ReportRenderInfo: this.ReportRenderInfo});
-        // this.server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
-        // this.server.start();
+        this.server = new grpc.Server();
+        this.server.addService(renderCommunicator_proto.JobGetter.service, {GetJobInfo: this.getJobInfo.bind(this)});
+        this.server.addService(renderCommunicator_proto.RenderInfoReport.service, {ReportRenderInfo: this.ReportRenderInfo.bind(this)});
+        this.server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
+        this.server.start();
     }
     private update(){
 
@@ -50,6 +63,7 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
 
     getJobInfo(call, callback){
         let workerId = call.request.workerId;
+        logger.info(`[getJobInfo][worker id: ${workerId}, request get job info.]`);
         let job: WorkerJob = this.workerMgr.getWorker(workerId).getJob();
         let expJob: ExperimentJob;
         if (job.jobType == JobType.JobType_Experiment){
@@ -65,6 +79,7 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
         let worker: JobWorker = this.workerMgr.getWorker(workerId);
         worker.setProcessId(call.request.renderProcessId);
         worker.setState(call.request.renderStatus);
+        logger.info(`[ReportRenderInfo][worker id : ${workerId}], state : ${call.request.renderStatus}`);
         callback(null,{'code': 1});
     }
 }

@@ -35,7 +35,9 @@ export class Handler {
             job.frontendId = session.frontendId;
             job.sid = session.id;
             job.jobType = msg.jobType;
+            //这两个应该从数据库获取
             job.expId = msg.experimentId;
+            job.expPath = "E:\\Z_DOWNLOAD\\tanks\\tanks.exe";
         }else if (msg.jobType == JobType.JobType_Calculate){
         }else {
         }

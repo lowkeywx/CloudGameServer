@@ -2,23 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/game-server/app/components/experimentCondition.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/game-server/app/components/jobManagement.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/game-server/app/components/workerManagement.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app.7z" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/renderCommunication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/workerCommunication.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentJob.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentJob.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +39,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="E:/A_DEVELOPMENT_ENVIRONMENT/A_JavascriptDE/Electron/lordofpomelo" />
+    <property name="last_opened_file_path" value="E:/A_DEVELOPMENT_ENVIRONMENT/A_JavascriptDE/TestRdp/index.js" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -84,6 +75,12 @@
       <workItem from="1585182592542" duration="15366000" />
       <workItem from="1585203291916" duration="13207000" />
       <workItem from="1585269806695" duration="24282000" />
+      <workItem from="1585296299364" duration="1594000" />
+      <workItem from="1585528452737" duration="3059000" />
+      <workItem from="1585538698912" duration="5498000" />
+      <workItem from="1585621024534" duration="39000" />
+      <workItem from="1585635479317" duration="6353000" />
+      <workItem from="1585701209885" duration="9483000" />
     </task>
     <servers />
   </component>
@@ -103,18 +100,19 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2511" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585279093364" />
-    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585203343851">
+    <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585646524853">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585203343851" />
+    <state x="2691" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585646524853" />
+    <state x="771" y="295" key="FileChooserDialogImpl/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1585621060644" />
     <state x="2632" y="281" width="582" height="524" key="StructurePopup" timestamp="1585290788869">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585290788869" />
-    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1585278980506">
+    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1585709713239">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585278980506" />
+    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585709713239" />
     <state x="2567" y="250" key="run.anything.popup" timestamp="1585208249409">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
