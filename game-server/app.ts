@@ -5,6 +5,7 @@ import {WorkerCommunication} from "./app/components/workerCommunication";
 import {WorkerManagement} from "./app/components/workerManagement";
 import {ExperimentCondition} from "./app/components/experimentCondition";
 import {JobDispatchComponent} from "./app/components/jobDispatchComponent";
+import {JobServerComponent} from "./app/components/jobServerComponent";
 
 /**
  *  替换全局Promise
@@ -38,9 +39,10 @@ app.configure('production|development', 'gate', function () {
 });
 
 app.configure('production|development', 'job', function () {
-    app.load(WorkerManagement);
-    app.load(JobManagement);
-    app.load(WorkerCommunication);
+    app.load(WorkerManagement);//没有取其他组件对象
+    app.load(JobManagement);//取workerManagement组件
+    app.load(WorkerCommunication);//取workerManagement组件
+    app.load(JobServerComponent);//取JobManagement组件
 });
 
 app.configure('production|development', 'experimentRecorder', function () {

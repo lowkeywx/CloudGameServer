@@ -3,6 +3,7 @@ import Timer = NodeJS.Timer;
 import {JobWorker, JobWorkerEvent, WorkerManagerService} from "./workerManageService";
 import {EventEmitter} from 'events';
 import {IComponent} from "pinus/lib/interfaces/IComponent";
+import {S2CEmitEvent, S2CMsg} from "../../../shared/messageCode";
 
 let logger = getLogger('pinus');
 
@@ -128,7 +129,14 @@ export class JobManageService extends EventEmitter implements IComponent{
     }
 
     afterStartAll(){
+        this.addListener(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
         this.ts = setInterval(this.update.bind(this),this.updateDiff);
+    }
+    private sendMessage(job: JobInitArgs | WorkerJob,code: any,msg: any){
+        let channelService = this.app.channelService;
+        let targets = {uid: job.uid, sid: job.frontendId};
+        //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
+        channelService.pushMessageByUids(S2CEmitEvent.jobMsg,{code: code,msg:msg},[targets],()=>{});
     }
     //这里需要调整,至少改成getJobsDoing()
     getJobsCount(){
@@ -157,6 +165,14 @@ export class JobManageService extends EventEmitter implements IComponent{
                 WorkerJob.setState(job,WorkerJobState.JobState_Ready);
             }
         }
+    }
+    private onJobFailed(job: WorkerJob){
+        //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
+        logger.info(`[sendMessage][任务处理失败, 现有任务数量: ${this.getJobsCount()}]`);
+        this.sendMessage(job, S2CMsg.jobFail,"");
+        this.app.rpc.experimentRecorder.experimentRemoter.experimentShutdown(null,(<ExperimentJob>job).expId);
+        //这里以后会给jobRecorder服务器发送任务记录
+        //通知connectorServer关闭链接
     }
     //这里应该修改一下,传入参数是jobInitArg, new一个新的WorkerJob然后将jobInitArg的值逐一赋值到新的job对象中
     async storeJob(job: JobInitArgs){

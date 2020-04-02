@@ -47,8 +47,8 @@ export class JobWorker {
         this.state = WorkerState.WorkerState_Start;
         child_process.exec(`${this.appPath} -j ${this.job.jobId} -w ${this.workerId}`,function (error,stdOut,stdErr) {
             logger.log('========================= :\n\n',error);
-            logger.log('========================= :\n\n',stdOut);
-            logger.log('========================= :\n\n',stdErr);
+            // logger.log('========================= :\n\n',stdOut);
+            // logger.log('========================= :\n\n',stdErr);
         }); //这里除了端口id之外还可以发送jobid
         this.startTime = Date.now();
         this.lastChangeTime = this.startTime;

@@ -9,7 +9,7 @@ import {
 } from "../../../service/jobManageService";
 import {S2CEmitEvent, S2CMsg} from "../../../../../shared/messageCode";
 import Timer = NodeJS.Timer;
-import {Worker} from "cluster";
+import {JobServerComponent} from "../../../components/jobServerComponent";
 
 let logger = getLogger('pinus');
 
@@ -29,21 +29,13 @@ declare global {
 
 export class JobRemoter {
     //存在bug,客户端断开链接应该清除对应的job
-    private record:JobServerRecord;
     private jobMgr: JobManageService;
-    private ts: Timer;
+    private jobServerCm: JobServerComponent;
     private jobSession: any[];
-    readonly updateDiff: number = 1000 * 5;
     constructor(private app: Application) {
-        this.record = new JobServerRecord(this.app.serverId);
-        this.jobSession = new Array<any>();
+        this.jobServerCm = this.app.get('JobServerComponent');
         this.jobMgr = this.app.get('JobManagement');
-        //这部分功能应该放到一个单独的plugin中
-        if (this.app.serverType == 'job'){
-            this.ts = setInterval(this.update.bind(this),this.updateDiff);
-            logger.info(`[绑定任务失败信号.]`);
-            this.jobMgr.addListener(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
-        }
+        this.jobSession = new Array<any>();
     }
     private sendMessage(job: JobInitArgs | WorkerJob,code: any,msg: any){
         let channelService = this.app.channelService;
@@ -52,28 +44,6 @@ export class JobRemoter {
         channelService.pushMessageByUids(S2CEmitEvent.jobMsg,{code: code,msg:msg},[targets],()=>{});
     }
     //workerJob应该继承JobInitArg以实现兼容性
-    private onJobFailed(job: WorkerJob){
-        //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
-        logger.info(`[sendMessage][任务处理失败, 现有任务数量: ${this.jobMgr.getJobsCount()}]`);
-        this.sendMessage(job, S2CMsg.jobFail,"");
-        this.app.rpc.experimentRecorder.experimentRemoter.experimentShutdown(null,(<ExperimentJob>job).expId);
-        //这里以后会给jobRecorder服务器发送任务记录
-        //通知connectorServer关闭链接
-    }
-    private async update(){
-        if (!this.jobMgr){
-            this.jobMgr = this.app.get('JobManagement');
-        }
-        if (!this.jobMgr) return;
-        if (this.jobMgr.getJobsCount() == 0){
-            this.record.state = JobServerState.JobStatus_Idle;
-        }else if (this.jobMgr.getJobsCount() <= 2){
-            this.record.state = JobServerState.JobStatus_Normal;
-        }else if (this.jobMgr.getJobsCount() > 2){
-            this.record.state = JobServerState.JobStatus_Overload;
-        }
-        await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo(null,this.record);
-    }
     public async doJob (job: JobInitArgs) {
         if(!job){
             logger.info('[doJob][收到错误任务信息!]');
