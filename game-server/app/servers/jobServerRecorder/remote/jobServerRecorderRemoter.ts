@@ -74,6 +74,7 @@ export class jobServerRecorderRemoter {
     }
     public async getBestServer () {
         if (!this.serverRecordList.length){
+            logger.info('[getBestServer][job服务器记录列表为空, 将首次初始化此列表, 所有服务器状态为离线!]');
             let serverList = this.app.getServersByType('job');
             for (let server of serverList){
                 let serverNode: JobServerRecord = new JobServerRecord(server.id);
@@ -81,11 +82,12 @@ export class jobServerRecorderRemoter {
             }
         }
         for (let server of this.serverRecordList){
+            logger.info(`[getBestServer][遍历job服务器列表, 服务器ID: ${server.serverId}!, 服务器状态:${server.state}]`);
             if(server.state <= 2){
                 return server.serverId;
             }
         }
-        logger.info('[getBestServer][no available server!]');
+        logger.info('[getBestServer][没有可用的服务器!]');
         return '';
     }
 

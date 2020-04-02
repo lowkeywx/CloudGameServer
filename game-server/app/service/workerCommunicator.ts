@@ -1,8 +1,7 @@
 import {Application, getLogger} from 'pinus';
 import {EventEmitter} from 'events';
 import {JobWorker, WorkerManagerService} from "./workerManageService";
-import {JobType, WorkerJob} from "./jobManageService";
-import {ExperimentJob} from "./experimentJob";
+import {ExperimentJob, JobType, WorkerJob} from "./jobManageService";
 import {IComponent} from "pinus/lib/interfaces/IComponent";
 
 let logger = getLogger('pinus');
@@ -64,7 +63,13 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
     getJobInfo(call, callback){
         let workerId = call.request.workerId;
         logger.info(`[getJobInfo][worker id: ${workerId}, request get job info.]`);
-        let job: WorkerJob = this.workerMgr.getWorker(workerId).getJob();
+        let worker = this.workerMgr.getWorker(workerId);
+        if (!worker){
+            logger.info(`[getJobInfo][worker id: ${workerId}, get worker error.]`);
+            callback(null,{'jobId': '','experimentPath': ''});
+            return;
+        }
+        let job: WorkerJob = worker.getJob();
         let expJob: ExperimentJob;
         if (job.jobType == JobType.JobType_Experiment){
             expJob = <ExperimentJob>job;
@@ -77,6 +82,11 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
     ReportRenderInfo(call, callback){
         let workerId = call.request.workerId;
         let worker: JobWorker = this.workerMgr.getWorker(workerId);
+        if (!worker){
+            logger.info(`[getJobInfo][worker id: ${workerId}, get worker error.]`);
+            callback(null,{'code': 1});
+            return;
+        }
         worker.setProcessId(call.request.renderProcessId);
         worker.setState(call.request.renderStatus);
         logger.info(`[ReportRenderInfo][worker id : ${workerId}], state : ${call.request.renderStatus}`);

@@ -1,7 +1,7 @@
 import {Application, FrontendSession, getLogger, Session} from 'pinus';
-import {ExperimentJob} from "../../../service/experimentJob";
-import {JobType, WorkerJob} from "../../../service/jobManageService";
+import {JobInitArgs, JobType} from "../../../service/jobManageService";
 import {S2CEmitEvent, S2CMsg} from "../../../../../shared/messageCode";
+import {JobDispatchComponent} from "../../../components/jobDispatchComponent";
 
 let logger = getLogger("pinus");
 
@@ -10,65 +10,43 @@ export default function (app: Application) {
 }
 
 export class Handler {
-    readonly flushInterval: number = 1000 * 5;
-    private jobs: WorkerJob[];
-    private tid: NodeJS.Timer = null;
+    private dispatcher: JobDispatchComponent;
     constructor(private app: Application) {
-        this.jobs = new Array<WorkerJob>();
-        if (this.app.serverType == 'jobDispatch'){
-            this.tid = setInterval(this._doJob.bind(this),this.flushInterval);
-        }
+        this.dispatcher = this.app.get('JobDispatchComponent');
+    }
+    //这个逻辑要放到remoter中, handle的逻辑要放到一个专门的service中
+    async onClientClose(sessionId: number){
+        this.dispatcher.removeBySid(sessionId);
     }
     async doJob(msg:any,session: FrontendSession){
         if (typeof msg.jobType !== 'number') {
             logger.info('[doJob][无效参数: jobType]');
             return {code: S2CMsg.invalidArgs_jobType};
         }
-        if (!msg.experimentId){
-            logger.info('[doJob][无效参数: experimentId]');
-            return {code: S2CMsg.invalidArgs_expId};
-        }
+
         //应该先如队列，在update处理队列中的job请求
-        let job: ExperimentJob = new ExperimentJob(null);
+        let jobArgs;
         if (msg.jobType == JobType.JobType_Experiment){
-            job.uid = session.uid;
-            job.frontendId = session.frontendId;
-            job.sid = session.id;
-            job.jobType = msg.jobType;
+            if (!msg.experimentId){
+                logger.info('[doJob][无效参数: experimentId]');
+                return {code: S2CMsg.invalidArgs_expId};
+            }
+            jobArgs = new JobInitArgs();
+            jobArgs.uid = session.uid;
+            jobArgs.frontendId = session.frontendId;
+            jobArgs.sid = session.id;
+            jobArgs.jobType = msg.jobType;
             //这两个应该从数据库获取
-            job.expId = msg.experimentId;
-            job.expPath = "E:\\Z_DOWNLOAD\\tanks\\tanks.exe";
+            jobArgs.expId = msg.experimentId;
+            //关于游戏程序路径放在哪里获取待定
+            jobArgs.expPath = "E:\\Z_DOWNLOAD\\tanks\\tanks.exe";
         }else if (msg.jobType == JobType.JobType_Calculate){
         }else {
         }
-        this.jobs.push(job);
-        this.showMessage(null,S2CMsg.jobInit,session.frontendId,session.uid,null);
+        if (!jobArgs) return false;
+        logger.info('[doJob][jobArgs已经成功创建, 下次循环将开始处理任务.]');
+        this.dispatcher.prepareJob(jobArgs);
         return true;
     }
-    private showMessage(route: string, msg: any, frontendId: string, uid: string, cb: (err?: Error, resp ?: any) => void){
-        route = route || S2CEmitEvent.showInClient;
-        let targets = {uid: uid,sid: frontendId};
-        let channelService = this.app.channelService.apushMessageByUids(route,{code: msg},[targets],()=>{});
-    }
-    private async _doJob(){
-        if (!this.jobs.length) return;
-        let job: WorkerJob = this.jobs[0];
-        this.jobs.shift();
-        //应该提供一个conditionService以后再完善
-        let expJob = <ExperimentJob>job;
-        if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,expJob.expId)){
-            this.showMessage(null,S2CMsg.maxJob,job.frontendId,job.uid,null);
-            this.jobs.push(job);
-            return false;
-        }
-        let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
-        if (!bestServer){
-            this.showMessage(null,S2CMsg.noIdleServer,job.frontendId,job.uid,null);
-            this.jobs.push(job);
-            return false;
-        }
-        //push to queue
-        logger.info(`[doJob][the best server is ${bestServer}]`);
-        this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, job);
-    }
+
 }

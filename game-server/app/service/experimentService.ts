@@ -31,7 +31,7 @@ export class ExperimentService implements IComponent{
     experimentsCondition: Map<string,Condition>;
     constructor(app: Application, opts ?: ExperimentServiceOptions) {
         this.app = app;
-        this.opts = opts || {maxRunningNum: 3,durationTime: 1000 * 60 * 5};
+        this.opts = opts || {maxRunningNum: 2,durationTime: 1000 * 60 * 5};
         this.experimentsCondition = new Map();
     }
     beforeStart(cb: () => void){
@@ -49,16 +49,20 @@ export class ExperimentService implements IComponent{
 
     afterStartAll(){
     }
-
-   async checkExperimentCondition(experiment: ExperimentRecord) {
+    checkExperimentCondition(experiment: ExperimentRecord) {
         if (!experiment || !experiment.experimentId){
             logger.info('[checkExperimentCondition][实验记录不存在或实验id无效.]')
             return false;
         }
         let condition: Condition = this.experimentsCondition[experiment.experimentId];
-        if (!condition) return false;
-        if(experiment.StartedCount <= condition.maxRunningNum) return true;
-        let durationTime: number = experiment.experimentTime.endTime.getTime() - experiment.experimentTime.startTime.getTime();
-        return durationTime <= condition.durationTime;
+        if (!condition) {
+            logger.info('[checkExperimentCondition][没有找到实验的限制条件对象.]')
+            return false;
+        }
+        //如果限制请求次数为3的话, 协成< 3或者<=2;
+        return experiment.StartedCount < condition.maxRunningNum;
+        //这里运行时间的判断还有问题
+        // let durationTime: number = experiment.experimentTime.endTime.getTime() - experiment.experimentTime.startTime.getTime();
+        // return durationTime <= condition.durationTime;
    }
 }

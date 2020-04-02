@@ -47,17 +47,17 @@ export class experimentRemoter {
             logger.info('[IsMeetExperimentCondition][首次请求实验, 生成实验数据.]');
             let experiment: ExperimentRecord = new ExperimentRecord();
             experiment.experimentId = experimentId;
-            experiment.StartedCount = 1;
+            experiment.StartedCount = 0;
             this.experimentsRecord[experimentId] = experiment;
         }
-        if (await this.experimentService.checkExperimentCondition(this.experimentsRecord[experimentId])){
-            let expRecord: ExperimentRecord = this.experimentsRecord[experimentId];
-            expRecord.StartedCount += 1;
-            return true;
-        }
-        return false;
-    }
+        return this.experimentService.checkExperimentCondition(this.experimentsRecord[experimentId]);
 
+    }
+    public async addExperimentStartRecord(experimentId: string){
+        let expRecord: ExperimentRecord = this.experimentsRecord[experimentId];
+        expRecord.StartedCount += 1;
+        logger.info(`[IsMeetExperimentCondition][该实验累计次数将累加${experimentId}.当前请求次数:${this.experimentsRecord[experimentId].StartedCount}]`);
+    }
     public async experimentShutdown(experimentId: string){
         if (!experimentId){
             logger.error('[experimentShutdown][experimentId is invalid!]');
@@ -68,8 +68,9 @@ export class experimentRemoter {
             logger.error(`[experimentShutdown][do not find experimentRecord by id ${experimentId}]`);
             return false;
         }
+        logger.info(`[experimentShutdown][实验ID=${experimentId}将要更新实验启动记录!启动次数减一]`);
         if (expRecord.StartedCount == 0){
-            logger.error('[experimentShutdown][no running experiment need to be shutdown!]');
+            logger.error(`[experimentShutdown][实验ID=${experimentId},实验启动次数为零!]`);
             return false;
         }
         expRecord.StartedCount -=1;

@@ -4,6 +4,7 @@ import {JobManagement} from "./app/components/jobManagement";
 import {WorkerCommunication} from "./app/components/workerCommunication";
 import {WorkerManagement} from "./app/components/workerManagement";
 import {ExperimentCondition} from "./app/components/experimentCondition";
+import {JobDispatchComponent} from "./app/components/jobDispatchComponent";
 
 /**
  *  替换全局Promise
@@ -44,6 +45,10 @@ app.configure('production|development', 'job', function () {
 
 app.configure('production|development', 'experimentRecorder', function () {
     app.load(ExperimentCondition);
+});
+
+app.configure('production|development', 'jobDispatch', function () {
+    app.load(JobDispatchComponent);
 });
 
 // start app

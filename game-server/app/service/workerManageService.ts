@@ -26,10 +26,11 @@ export class JobWorker {
         this.state = WorkerState.WorkerState_Init;
         this.workerMgr = manager;
         this.stopImmediate = false;
-        this.workerId = this.workerMgr.getWorkerCount();
+        this.lastChangeTime = Date.now();
+        this.workerId = this.lastChangeTime.toString();
     }
     job: WorkerJob;
-    readonly workerId: number;
+    readonly workerId: string;
     private processId: number;
     readonly appPath: string;
     readonly workPath: string;
@@ -42,45 +43,25 @@ export class JobWorker {
     private needClean: boolean;
     readonly invalidTimeDiff = 1000 * 5;
     public start(){
-        logger.info(`[start][即将启动worker程序.]`);
+        logger.info(`[start][即将启动worker程序. jobId=${this.job.jobId},workerId=${this.workerId}]`);
         this.state = WorkerState.WorkerState_Start;
-        child_process.exec(`${this.appPath} ${this.job.jobId} ${this.workerId}`,function (error,stdOut,stdErr) {
+        child_process.exec(`${this.appPath} -j ${this.job.jobId} -w ${this.workerId}`,function (error,stdOut,stdErr) {
             logger.log('========================= :\n\n',error);
             logger.log('========================= :\n\n',stdOut);
             logger.log('========================= :\n\n',stdErr);
         }); //这里除了端口id之外还可以发送jobid
-        //child_process.exec(`${this.appPath} ${this.job.jobId} ${this.workerId}`); //这里除了端口id之外还可以发送jobid
-        // child_process.execFile('cmd.exe',[this.appPath,`-w ${this.workerId}`,`-j ${this.job.jobId}`],function (data) {
-        //     logger.info(`[start][worker程序已启动,请查看启动情况.]`);
-        // }.bind(this));
-        //child_process.exec(this.workPath); //这里除了端口id之外还可以发送jobid
-        // cmd.get(`${this.workPath}
-        //         d:
-        //         ./AppAgent.exe -w ${this.workerId} -j ${this.job.jobId}
-        // `,function (err,data,stdErr) {
-        //     if (!err) {
-        //         logger.log('the node-cmd cloned dir contains these files :\n\n',data)
-        //     } else {
-        //         logger.log('error', err)
-        //     }
-        // });
-        // cmd.get(`d:
-        // cd "D:/VSProject/AppAgent/output/x64/Debug"
-        // AppAgent.exe -w ${this.workerId} -j ${this.job.jobId}`,function (err,data,stdErr) {
-        //          if (!err) {
-        //              logger.log('the node-cmd cloned dir contains these files :\n\n',data)
-        //          } else {
-        //              logger.log('error', err)
-        //          }
-        // });
-
         this.startTime = Date.now();
         this.lastChangeTime = this.startTime;
     }
     public shutDown(){
+        if(!this.processId) return;
+        cmd.get(`taskkill /pid ${this.processId} -f`,function (err, data, stderr) {
+            logger.info(`err: ${err}\n data:${data}\n stderr: ${stderr}`);
+        });
     }
     public getJob(){
         WorkerJob.setState(this.job,WorkerJobState.JobState_Doing);
+        this.lastChangeTime = Date.now();
         return this.job;
     }
     public getWorkerId(){
@@ -145,8 +126,9 @@ export class WorkerManagerService extends EventEmitter implements IComponent{
         this.ts = setInterval(this.update.bind(this),this.opts.updateDiff);
     }
 
-    getWorker(workerId: number): JobWorker{
+    getWorker(workerId: string): JobWorker{
         for (let worker of this.workerList){
+            //logger.info(`获取worker对象,workerId${workerId}, 当前workerid:${worker.getWorkerId()}`);
             if (worker.getWorkerId() === workerId){
                 return worker;
             }
@@ -156,8 +138,8 @@ export class WorkerManagerService extends EventEmitter implements IComponent{
     createWorkerFor(job: WorkerJob){
         let worker: JobWorker = new JobWorker(this);
         worker.job = job;
-        worker.start();
         this.workerList.push(worker);
+        worker.start();
         //这个信号在这里发送不严谨, 应该worker连接上以后或者确定worker进程确实启动成功在发送
         this.emit(JobWorkerEvent.workerCreated,worker);
     }
@@ -167,7 +149,7 @@ export class WorkerManagerService extends EventEmitter implements IComponent{
     reportImmediate(worker: JobWorker){
         //暂时不需要
     }
-    stopJob(workerId: number){
+    stopJob(workerId: string){
         for (let i = 0; i < this.workerList.length; i++){
             let worker = this.workerList[i];
             if (worker.workerId == workerId){
@@ -180,9 +162,14 @@ export class WorkerManagerService extends EventEmitter implements IComponent{
         this.clearZombieProcess();
     }
     clearZombieProcess(){
-        for (let worker of this.workerList){
+        for (let i = 0; i < this.workerList.length; i++){
+            let worker = this.workerList[i];
             if (worker.isNeedClean()){
                 //杀死进程命令
+                logger.info(`存在需要清理的worker对象, 对象ID=${worker.workerId}`);
+                worker.shutDown();
+                //这里有bug需要判断进程是否真的杀死,如果没有杀死不能从链表中清除
+                this.workerList.splice(i,1);
             }
         }
     }
@@ -192,7 +179,6 @@ export class WorkerManagerService extends EventEmitter implements IComponent{
             if (!worker.isValid()){
                 //报告有的worker不行了
                 logger.info(`[checkAndReport][工作者进程失联, 将清理工作者进程和任务.当前工作者进程数量: ${this.workerList.length}]`);
-                this.workerList.splice(i,1);
                 this.emit(JobWorkerEvent.workerInvalid, worker);
             }
         }

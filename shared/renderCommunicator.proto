@@ -15,12 +15,12 @@ service JobGetter {
 // The request message containing the user's name.
 message JobRequest {
   int32 renderProcessId = 1;
-  int32 workerId = 2;
+  string workerId = 2;
 }
 
 // The response message containing the greetings
 message JobResponse {
-  int32 jobId = 1;
+  string jobId = 1;
   string experimentPath = 2;
 }
 
@@ -32,7 +32,7 @@ message RenderInfoRequest{
     int32 renderProcessId = 1;
     int32 renderStatus = 2;
     int32 reportType = 3;
-    int32 workerId = 4;
+    string workerId = 4;
 }
 
 message RenderInfoResponse{

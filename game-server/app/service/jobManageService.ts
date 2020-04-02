@@ -26,6 +26,18 @@ export enum JobType {
     JobType_Calculate
 }
 
+export class JobInitArgs {
+    constructor() {
+    }
+    uid: string;
+    frontendId: string;
+    sid: number;
+    jobType: JobType;
+    expId: string;
+    //关于游戏程序路径放在哪里获取待定
+    expPath: string;
+}
+
 export class WorkerJob {
     //job还需要和experimentRecord进行绑定
     constructor(manager?: JobManageService) {
@@ -34,10 +46,10 @@ export class WorkerJob {
             return;
         }
         this.jobMgr = manager;
-        this.jobId = this.jobMgr.getJobsCount();
+        this.jobId = Date.now().toString();
         this.state = WorkerJobState.JobState_Init;
     }
-    jobId: number;
+    jobId: string;
     jobType: JobType;
     uid: string;
     frontendId: string;
@@ -55,7 +67,7 @@ export class WorkerJob {
     }
     static initIfNeed(job: WorkerJob,manager: JobManageService){
         job.jobMgr = manager;
-        job.jobId = job.jobMgr.getJobsCount();
+        job.jobId = Date.now().toString();
         job.state = WorkerJobState.JobState_Init;
     }
     static begin(job: WorkerJob){
@@ -66,11 +78,22 @@ export class WorkerJob {
         job.endTime = Date.now();
         job.state = WorkerJobState.JobState_Finish;
     }
+    static isInit(job: WorkerJob){
+        return job.state !== WorkerJobState.JobState_NotInit;
+    }
     static isRawJob(job: WorkerJob){
         return job.state === WorkerJobState.JobState_Init;
     }
     static isFailed(job: WorkerJob){
         return job.state === WorkerJobState.JobState_Fail;
+    }
+}
+
+export class ExperimentJob extends WorkerJob{
+    expPath: string;
+    expId: string;
+    constructor(manager: JobManageService) {
+        super(manager);
     }
 }
 
@@ -92,7 +115,6 @@ export class JobManageService extends EventEmitter implements IComponent{
         this.app = app;
         this.opts = opts || {maxJob: 5,updateDiff: 1000 * 5};
         this.jobList = new Array<WorkerJob>();
-        logger.info('[JobManageService][加载组件,组件初始化成功]');
         this.workerMgr = this.app.get('WorkerManagement');
     }
     // beforeStart(cb: () => void){
@@ -118,7 +140,7 @@ export class JobManageService extends EventEmitter implements IComponent{
         // }
         return this.jobList.length;
     }
-    getJob(id: number = -1){
+    getJob(id: string = ''){
         for (let job of this.jobList){
             if (job.jobId === id){
                 return job;
@@ -129,26 +151,40 @@ export class JobManageService extends EventEmitter implements IComponent{
     update(){
         for (let i = 0; i < this.jobList.length; i++){
             let job = this.jobList[i];
-            if (WorkerJob.getState(job) === WorkerJobState.JobState_Init){
+            if (WorkerJob.isRawJob(job)){
                 logger.info('[update][任务数据正常, 开始创建工作者.]')
                 this.workerMgr.createWorkerFor(job);
                 WorkerJob.setState(job,WorkerJobState.JobState_Ready);
             }
         }
     }
-    async storeJob(job: WorkerJob){
-        logger.info('[storeJob][收到任务将存入队列, 下一帧开始处理.]')
-        if (WorkerJob.getState(job) == WorkerJobState.JobState_NotInit) {
-            WorkerJob.initIfNeed(job,this);
+    //这里应该修改一下,传入参数是jobInitArg, new一个新的WorkerJob然后将jobInitArg的值逐一赋值到新的job对象中
+    async storeJob(job: JobInitArgs){
+        //传入参数job是一个残缺的job对象
+        logger.info('[storeJob][收到任务将存入队列, 下一帧开始处理.]');
+        let fullJob;
+        if (job.jobType == JobType.JobType_Experiment){
+            fullJob = new ExperimentJob(this);
+            fullJob.uid = job.uid;
+            fullJob.sid = job.sid;
+            fullJob.frontendId = job.frontendId;
+            fullJob.jobType = job.jobType;
+            fullJob.expId = job.expId;
+            fullJob.expPath = job.expPath;
+        }else if (job.jobType == JobType.JobType_Calculate){
+        }else {
         }
-        this.jobList.push(job);
-        return {jobId: job.jobId, sessionId: job.sid};
+        if (!fullJob) return null;
+        if (!WorkerJob.isInit(fullJob)) {
+            WorkerJob.initIfNeed(fullJob,this);
+        }
+        this.jobList.push(fullJob);
+        return {jobId: fullJob.jobId, sessionId: fullJob.sid};
     }
-    async stopJob(jobId : number){
+    async stopJob(jobId : string){
         for (let i = 0; i < this.jobList.length; i++){
             let job = this.jobList[i];
             if (job.jobId == jobId){
-                this.jobList.splice(i,1);
                 this.workerMgr.stopJob(job.worker.workerId);
             }
         }
@@ -160,8 +196,14 @@ export class JobManageService extends EventEmitter implements IComponent{
     onWorkerInvalid(worker: JobWorker){
         logger.info('[onWorkerInvalid][收到工作者失效信号, 处理关联任务.]')
         WorkerJob.setState(worker.job,WorkerJobState.JobState_Fail);
-        this.jobList.splice(worker.job.jobId,1);
-        this.emit(WorkerJobEvent.jobFail,worker.job);
+        for (let i = 0; i < this.jobList.length; i++){
+            let job = this.jobList[i];
+            if (job.jobId == worker.job.jobId){
+                this.jobList.splice(i,1);
+                logger.info('[onWorkerInvalid][发送任务处理失败信号.]')
+                this.emit(WorkerJobEvent.jobFail,worker.job);
+            }
+        }
     }
     // exportEvent(source: EventEmitter,inEvent: string,outEvent: string){
     //     source.on(inEvent,function () {

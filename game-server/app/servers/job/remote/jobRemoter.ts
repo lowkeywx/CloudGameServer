@@ -1,9 +1,15 @@
 import {Application, FrontendSession, getLogger, RemoterClass} from 'pinus';
 import {JobServerRecord, JobServerState} from "../../jobServerRecorder/remote/jobServerRecorderRemoter";
-import {JobManageService, WorkerJob, WorkerJobEvent} from "../../../service/jobManageService";
+import {
+    ExperimentJob,
+    JobInitArgs,
+    JobManageService,
+    WorkerJob,
+    WorkerJobEvent
+} from "../../../service/jobManageService";
 import {S2CEmitEvent, S2CMsg} from "../../../../../shared/messageCode";
 import Timer = NodeJS.Timer;
-import {ExperimentJob} from "../../../service/experimentJob";
+import {Worker} from "cluster";
 
 let logger = getLogger('pinus');
 
@@ -31,22 +37,25 @@ export class JobRemoter {
     constructor(private app: Application) {
         this.record = new JobServerRecord(this.app.serverId);
         this.jobSession = new Array<any>();
+        this.jobMgr = this.app.get('JobManagement');
         //这部分功能应该放到一个单独的plugin中
         if (this.app.serverType == 'job'){
             this.ts = setInterval(this.update.bind(this),this.updateDiff);
-            this.app.get('JobManagement').on(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
+            logger.info(`[绑定任务失败信号.]`);
+            this.jobMgr.addListener(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
         }
     }
-    private sendMessage(job: WorkerJob,code: any,msg: any){
+    private sendMessage(job: JobInitArgs | WorkerJob,code: any,msg: any){
         let channelService = this.app.channelService;
-        let targets = {uid: job.uid,sid: job.frontendId};
+        let targets = {uid: job.uid, sid: job.frontendId};
         //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
         channelService.pushMessageByUids(S2CEmitEvent.jobMsg,{code: code,msg:msg},[targets],()=>{});
     }
+    //workerJob应该继承JobInitArg以实现兼容性
     private onJobFailed(job: WorkerJob){
         //所有的返回消息需要改成返回码, 返回码注释文字解释错误法含义
         logger.info(`[sendMessage][任务处理失败, 现有任务数量: ${this.jobMgr.getJobsCount()}]`);
-        this.sendMessage(job,S2CMsg.jobFail,"");
+        this.sendMessage(job, S2CMsg.jobFail,"");
         this.app.rpc.experimentRecorder.experimentRemoter.experimentShutdown(null,(<ExperimentJob>job).expId);
         //这里以后会给jobRecorder服务器发送任务记录
         //通知connectorServer关闭链接
@@ -65,13 +74,23 @@ export class JobRemoter {
         }
         await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo(null,this.record);
     }
-    public async doJob (job: WorkerJob) {
+    public async doJob (job: JobInitArgs) {
+        if(!job){
+            logger.info('[doJob][收到错误任务信息!]');
+        }
         logger.info('[doJob][收到新的任务,加入到任务队列,下一次循环处理.]')
-        let info = this.jobMgr.storeJob(job);
+        let info = await this.jobMgr.storeJob(job);
+        if (!info) {
+            this.sendMessage(job,S2CMsg.jobFail,info.jobId);
+            logger.info(`[doJob][任务信息没有存储成功,}`);
+        }
         this.jobSession.push(info);
-        this.sendMessage(job,S2CMsg.jobDispatched,info["jobId"]);
+        logger.info(`[doJob][info.jobId=${info.jobId}`);
+        this.sendMessage(job,S2CMsg.jobDispatched,info.jobId);
     }
-    public async onClientClose(sessionId: string){
+    //客户端断开链接后,清理正在处理和未处理的任务
+    public async onClientClose(sessionId: number){
+        logger.info(`[onClientClose][有客户端链接断开, sessionId=${sessionId}`);
         for (let info of this.jobSession){
             if (info.sessionId == sessionId){
                 await this.jobMgr.stopJob(info.jobId);
