@@ -8,7 +8,7 @@ let logger = getLogger("pinus");
 
 export interface JobDispatchCmOptions {
     updateDiff?: number;
-    maxJob?: number;
+    maxJob?: number;//整个系统能承接任务数量, 目前没有使用
 }
 
 export class JobDispatchComponent implements IComponent{
@@ -19,7 +19,7 @@ export class JobDispatchComponent implements IComponent{
     private jobs: JobInitArgs[];
     constructor(app: Application, opts ?: JobDispatchCmOptions) {
         this.app = app;
-        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 3};
+        this.opts = opts || {maxJob: 5,updateDiff: 1000 * 3};
         this.jobs = new Array<JobInitArgs>();
         app.set('JobDispatchComponent', this, true);
     }
@@ -45,7 +45,6 @@ export class JobDispatchComponent implements IComponent{
     public prepareJob(jobArgs: JobInitArgs){
         //应该先如队列，在update处理队列中的job请求
         if (!jobArgs) return false;
-        logger.info('[doJob][jobArgs已经成功创建, 下次循环将开始处理任务.]');
         this.jobs.push(jobArgs);
         this.showMessage(null,S2CMsg.jobInit,jobArgs.frontendId,jobArgs.uid,null);
         return true;

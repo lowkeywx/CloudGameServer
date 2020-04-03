@@ -114,7 +114,7 @@ export class JobManageService extends EventEmitter implements IComponent{
     constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
         this.app = app;
-        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 5};
+        this.opts = opts || {maxJob: 1,updateDiff: 1000 * 5};
         this.jobList = new Array<WorkerJob>();
         this.workerMgr = this.app.get('WorkerManagement');
     }
@@ -142,8 +142,14 @@ export class JobManageService extends EventEmitter implements IComponent{
     getJobsCount(){
         return this.jobList.length;
     }
+    isIdle(){
+        return (this.getJobsCount() < this.opts.maxJob && !this.getJobsCount());
+    }
     isOK() {
-       return this.getJobsCount() <= this.opts.maxJob
+       return this.getJobsCount() < this.opts.maxJob;
+    }
+    isOverload(){
+        return this.getJobsCount() >= this.opts.maxJob;
     }
     //这个方法还不能使用
     getJob(id: string = ''){

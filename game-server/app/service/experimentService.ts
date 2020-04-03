@@ -20,8 +20,8 @@ export class ExperimentRecord{
 }
 
 export interface ExperimentServiceOptions {
-    maxRunningNum?: number;
-    durationTime?: number;
+    maxRunningNum?: number;//同一个实验最大请求次数
+    durationTime?: number;//游戏能够运行的最大时长
 }
 
 export class ExperimentService implements IComponent{

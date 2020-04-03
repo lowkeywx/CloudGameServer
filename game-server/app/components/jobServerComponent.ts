@@ -20,7 +20,7 @@ export class JobServerComponent implements IComponent {
     private jobMgr: JobManageService;
     constructor(app: Application, opts: JobServerCmOptions) {
         this.app = app;
-        this.opts = opts || {updateDiff: 1000 * 5};
+        this.opts = opts || {updateDiff: 1000 * 0.9};
         this.record = new JobServerRecord(this.app.serverId);
         this.jobMgr = this.app.get('JobManagement');
         app.set('JobServerComponent', this, true);
@@ -42,11 +42,11 @@ export class JobServerComponent implements IComponent {
             this.jobMgr = this.app.get('JobManagement');
         }
         if (!this.jobMgr) return;
-        if (this.jobMgr.getJobsCount() == 0){
+        if (this.jobMgr.isIdle()){
             this.record.state = JobServerState.JobStatus_Idle;
         }else if (this.jobMgr.isOK()){
             this.record.state = JobServerState.JobStatus_Normal;
-        }else if (this.jobMgr.getJobsCount() > 2){
+        }else if (this.jobMgr.isOverload()){
             this.record.state = JobServerState.JobStatus_Overload;
         }
         this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo(null,this.record);

@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +82,8 @@
       <workItem from="1585786683594" duration="10981000" />
       <workItem from="1585799100997" duration="9229000" />
       <workItem from="1585810012267" duration="10354000" />
-      <workItem from="1585873651155" duration="772000" />
+      <workItem from="1585873651155" duration="1480000" />
+      <workItem from="1585875793972" duration="3088000" />
     </task>
     <servers />
   </component>
@@ -110,10 +112,10 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585810758315" />
-    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1585818639103">
+    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1585877270275">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585818639103" />
+    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585877270275" />
     <state x="2567" y="250" key="run.anything.popup" timestamp="1585208249409">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>

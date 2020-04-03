@@ -49,7 +49,10 @@ export class JobServerRecord {
         if (Date.now() - record.lastReportTime > record.invalidDiff){
             record.state = JobServerState.JobStatus_Error;
         }
-        return record.state <= 3;
+        return record.state >= JobServerState.JobStatus_OffLine;
+    }
+    static canUse(record: JobServerRecord){
+        return record.state < JobServerState.JobStatus_Overload;
     }
 }
 
@@ -83,7 +86,10 @@ export class jobServerRecorderRemoter {
         }
         for (let server of this.serverRecordList){
             logger.info(`[getBestServer][遍历job服务器列表, 服务器ID: ${server.serverId}!, 服务器状态:${server.state}]`);
-            if(server.state <= 2){
+            if (JobServerRecord.invalid(server)){
+                break;
+            }
+            if(JobServerRecord.canUse(server)){
                 return server.serverId;
             }
         }
@@ -100,10 +106,6 @@ export class jobServerRecorderRemoter {
                 serverInfo.lastReportTime = Date.now();
                 this.serverRecordList[i] = serverInfo;
             }
-        }
-
-        for (let server of this.serverRecordList){
-
         }
     }
 }
