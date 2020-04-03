@@ -21,7 +21,7 @@ export class Handler {
             });
             session.on('closed',function () {
                 this.app.rpc.job.jobRemoter.onClientClose(null,session.id);
-                //这里还需要清理正在排队的任务, 需调用jobDispatch的相关方法
+                this.app.rpc.jobDispatch.jobDispatchRemoter.onClientClose(null,session.id);
             }.bind(this));
             return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(null,msg.schollId);
         }

@@ -114,7 +114,7 @@ export class JobManageService extends EventEmitter implements IComponent{
     constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
         this.app = app;
-        this.opts = opts || {maxJob: 1,updateDiff: 1000 * 5};
+        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 5};
         this.jobList = new Array<WorkerJob>();
         this.workerMgr = this.app.get('WorkerManagement');
     }

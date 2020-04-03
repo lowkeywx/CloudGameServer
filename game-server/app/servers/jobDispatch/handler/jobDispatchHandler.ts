@@ -14,10 +14,6 @@ export class Handler {
     constructor(private app: Application) {
         this.dispatcher = this.app.get('JobDispatchComponent');
     }
-    //这个逻辑要放到remoter中, handle的逻辑要放到一个专门的service中
-    async onClientClose(sessionId: number){
-        this.dispatcher.removeBySid(sessionId);
-    }
     async doJob(msg:any,session: FrontendSession){
         if (typeof msg.jobType !== 'number') {
             logger.info('[doJob][无效参数: jobType]');

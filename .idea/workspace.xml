@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/remote/jobDispatchRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +82,10 @@
       <workItem from="1585799100997" duration="9229000" />
       <workItem from="1585810012267" duration="10354000" />
       <workItem from="1585873651155" duration="1480000" />
-      <workItem from="1585875793972" duration="3088000" />
+      <workItem from="1585875793972" duration="4348000" />
+      <workItem from="1585880196128" duration="47000" />
+      <workItem from="1585880831821" duration="75000" />
+      <workItem from="1585881447640" duration="29000" />
     </task>
     <servers />
   </component>
