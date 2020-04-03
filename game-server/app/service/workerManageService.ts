@@ -54,10 +54,10 @@ export class JobWorker {
         this.lastChangeTime = this.startTime;
     }
     public shutDown(){
-        if(!this.processId) return;
-        cmd.get(`taskkill /pid ${this.processId} -f`,function (err, data, stderr) {
-            logger.info(`err: ${err}\n data:${data}\n stderr: ${stderr}`);
-        });
+        // if(!this.processId) return;
+        // cmd.get(`taskkill /pid ${this.processId} -f`,function (err, data, stderr) {
+        //     logger.info(`err: ${err}\n data:${data}\n stderr: ${stderr}`);
+        // });
     }
     public getJob(){
         WorkerJob.setState(this.job,WorkerJobState.JobState_Doing);

@@ -84,7 +84,7 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
         let worker: JobWorker = this.workerMgr.getWorker(workerId);
         if (!worker){
             logger.info(`[getJobInfo][worker id: ${workerId}, get worker error.]`);
-            callback(null,{'code': 1});
+            callback(null,{'code': -1});
             return;
         }
         worker.setProcessId(call.request.renderProcessId);

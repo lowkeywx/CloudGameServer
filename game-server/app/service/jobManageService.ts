@@ -114,7 +114,7 @@ export class JobManageService extends EventEmitter implements IComponent{
     constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
         this.app = app;
-        this.opts = opts || {maxJob: 5,updateDiff: 1000 * 5};
+        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 5};
         this.jobList = new Array<WorkerJob>();
         this.workerMgr = this.app.get('WorkerManagement');
     }
@@ -140,14 +140,12 @@ export class JobManageService extends EventEmitter implements IComponent{
     }
     //这里需要调整,至少改成getJobsDoing()
     getJobsCount(){
-        // let count = 0;
-        // for (let job of this.jobList){
-        //     if (WorkerJob.isRawJob(job)){
-        //         count++;
-        //     }
-        // }
         return this.jobList.length;
     }
+    isOK() {
+       return this.getJobsCount() <= this.opts.maxJob
+    }
+    //这个方法还不能使用
     getJob(id: string = ''){
         for (let job of this.jobList){
             if (job.jobId === id){

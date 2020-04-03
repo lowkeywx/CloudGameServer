@@ -44,7 +44,7 @@ export class JobServerComponent implements IComponent {
         if (!this.jobMgr) return;
         if (this.jobMgr.getJobsCount() == 0){
             this.record.state = JobServerState.JobStatus_Idle;
-        }else if (this.jobMgr.getJobsCount() <= 2){
+        }else if (this.jobMgr.isOK()){
             this.record.state = JobServerState.JobStatus_Normal;
         }else if (this.jobMgr.getJobsCount() > 2){
             this.record.state = JobServerState.JobStatus_Overload;
