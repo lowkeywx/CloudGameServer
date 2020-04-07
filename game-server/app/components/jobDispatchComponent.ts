@@ -3,6 +3,7 @@ import {Application, getLogger} from "pinus";
 import Timer = NodeJS.Timer;
 import {JobInitArgs, JobType} from "../service/jobManageService";
 import {S2CEmitEvent, S2CMsg} from "../../../shared/messageCode";
+import {privateDecrypt} from "crypto";
 
 let logger = getLogger("pinus");
 
@@ -46,29 +47,56 @@ export class JobDispatchComponent implements IComponent{
         //应该先如队列，在update处理队列中的job请求
         if (!jobArgs) return false;
         this.jobs.push(jobArgs);
-        this.showMessage(null,S2CMsg.jobInit,jobArgs.frontendId,jobArgs.uid,null);
+        this.showMessage(null,S2CMsg.jobInit,'',jobArgs.frontendId,jobArgs.uid,null);
         return true;
     }
     private update(){
         this._doJob();
     }
-    private showMessage(route: string, msg: any, frontendId: string, uid: string, cb: (err?: Error, resp ?: any) => void){
+    private showMessage(route: string, msg: any, data: any, frontendId: string, uid: string, cb: (err?: Error, resp ?: any) => void){
         route = route || S2CEmitEvent.showInClient;
         let targets = {uid: uid,sid: frontendId};
-        this.app.channelService.apushMessageByUids(route,{code: msg},[targets],()=>{});
+        this.app.channelService.apushMessageByUids(route,{code: msg,data: data},[targets],()=>{});
     }
     private async _doJob(){
         if (!this.jobs.length) {
             logger.info(`[_doJob][任务队列为空!]`);
             return;
         }
+
+        for (let i = 0; i < this.jobs.length; i++){
+            let jobArg = this.jobs[i];
+            if (jobArg.jobType == JobType.JobType_Experiment) {
+                if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,jobArg.expId)){
+                    this.showMessage(null,S2CMsg.maxJob,`您前面还有${i}人`,jobArg.frontendId,jobArg.uid,null);
+                    continue;
+                }
+                logger.info(`[_doJob][条件检测已经通过]. 任务类型=${jobArg.jobType}, 任务关联的session=${jobArg.sid}`);
+            }
+            let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
+            if (!bestServer){
+                logger.info(`[_doJob][没有找到最佳可用服务器`);
+                this.showMessage(null,S2CMsg.noIdleServer,`您前面还有${i}人`,jobArg.frontendId,jobArg.uid,null);
+                continue;
+            }
+            await this.app.rpc.experimentRecorder.experimentRemoter.addExperimentStartRecord(null,jobArg.expId)
+            //这里应该判断一下,成功以后才可以删除, 没成功直接continue
+            this.jobs.splice(i,1);
+            //push to queue
+            logger.info(`[doJob][找到最佳可用服务器, ID: ${bestServer}]`);
+            await this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, jobArg);
+        }
+
+
+    }
+    private async oldDoJobLogic(){
         let jobArgs: JobInitArgs = this.jobs[0];
         this.jobs.shift();
         //应该提供一个conditionService以后再完善
         //类型判断封装哼一个函数吧
         if (jobArgs.jobType == JobType.JobType_Experiment) {
             if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,jobArgs.expId)){
-                this.showMessage(null,S2CMsg.maxJob,jobArgs.frontendId,jobArgs.uid,null);
+                this.showMessage(null,S2CMsg.maxJob,'',jobArgs.frontendId,jobArgs.uid,null);
                 this.jobs.push(jobArgs);
                 return false;
             }
@@ -77,7 +105,7 @@ export class JobDispatchComponent implements IComponent{
         let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
         if (!bestServer){
             logger.info(`[doJob][没有找到最佳可用服务器`);
-            this.showMessage(null,S2CMsg.noIdleServer,jobArgs.frontendId,jobArgs.uid,null);
+            this.showMessage(null,S2CMsg.noIdleServer,'',jobArgs.frontendId,jobArgs.uid,null);
             this.jobs.push(jobArgs);
             return false;
         }
@@ -87,3 +115,4 @@ export class JobDispatchComponent implements IComponent{
         await this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, jobArgs);
     }
 }
+
