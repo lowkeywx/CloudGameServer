@@ -34,8 +34,6 @@ export class Handler {
             jobArgs.jobType = msg.jobType;
             //这两个应该从数据库获取
             jobArgs.expId = msg.experimentId;
-            //关于游戏程序路径放在哪里获取待定, 感觉放在job服务器比较好
-            jobArgs.expPath = "E:\\Z_DOWNLOAD\\tanks\\tanks.exe";
         }else if (msg.jobType == JobType.JobType_Calculate){
         }else {
         }

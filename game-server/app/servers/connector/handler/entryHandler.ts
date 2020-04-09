@@ -23,7 +23,7 @@ export class Handler {
                 this.app.rpc.job.jobRemoter.onClientClose(null,session.id);
                 this.app.rpc.jobDispatch.jobDispatchRemoter.onClientClose(null,session.id);
             }.bind(this));
-            return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(null,msg.schollId);
+            return this.app.rpc.experimentRecorder.experimentRemoter.getAllExperimentBriefInfo(null,msg.schoolId);
         }
         return S2CMsg.authFail;
     }

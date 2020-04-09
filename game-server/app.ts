@@ -6,6 +6,8 @@ import {WorkerManagement} from "./app/components/workerManagement";
 import {ExperimentCondition} from "./app/components/experimentCondition";
 import {JobDispatchComponent} from "./app/components/jobDispatchComponent";
 import {JobServerComponent} from "./app/components/jobServerComponent";
+import {ExperimentInfoCom} from "./app/components/experimentInfoCom";
+import {DatabaseCom} from "./app/components/databaseCom";
 
 /**
  *  替换全局Promise
@@ -43,10 +45,13 @@ app.configure('production|development', 'job', function () {
     app.load(JobManagement);//取workerManagement组件
     app.load(WorkerCommunication);//取workerManagement组件
     app.load(JobServerComponent);//取JobManagement组件
+    app.load(DatabaseCom);
 });
 
 app.configure('production|development', 'experimentRecorder', function () {
     app.load(ExperimentCondition);
+    app.load(ExperimentInfoCom);
+    app.load(DatabaseCom);
 });
 
 app.configure('production|development', 'jobDispatch', function () {

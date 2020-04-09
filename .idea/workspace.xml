@@ -2,9 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/game-server/app/components/databaseCom.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game-server/app/components/experimentInfoCom.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game-server/app/service/db/dbTableBase.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game-server/app/service/db/experimentInfoTable.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/experimentRecorder/remote/experimentRemoter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +96,8 @@
       <workItem from="1585881447640" duration="29000" />
       <workItem from="1585898271520" duration="453000" />
       <workItem from="1585899160544" duration="1019000" />
-      <workItem from="1586219916906" duration="7111000" />
+      <workItem from="1586219916906" duration="14321000" />
+      <workItem from="1586408861398" duration="24588000" />
     </task>
     <servers />
   </component>
@@ -102,10 +113,10 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2594" y="342" key="#com.intellij.fileTypes.FileTypeChooser/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585032420998" />
-    <state x="2511" y="129" key="CommitChangelistDialog2" timestamp="1585874420262">
+    <state x="2511" y="129" key="CommitChangelistDialog2" timestamp="1586428921323">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2511" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585874420262" />
+    <state x="2511" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586428921323" />
     <state x="2691" y="295" key="FileChooserDialogImpl" timestamp="1585646524853">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>

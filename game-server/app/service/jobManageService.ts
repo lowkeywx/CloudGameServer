@@ -1,9 +1,11 @@
 import {Application, getLogger} from 'pinus';
-import Timer = NodeJS.Timer;
 import {JobWorker, JobWorkerEvent, WorkerManagerService} from "./workerManageService";
 import {EventEmitter} from 'events';
 import {IComponent} from "pinus/lib/interfaces/IComponent";
 import {S2CEmitEvent, S2CMsg} from "../../../shared/messageCode";
+import {DatabaseCom, DBTableName} from "../components/databaseCom";
+import {ExperimentInfoTable} from "./db/experimentInfoTable";
+import Timer = NodeJS.Timer;
 
 let logger = getLogger('pinus');
 
@@ -110,11 +112,12 @@ export class JobManageService extends EventEmitter implements IComponent{
     private jobList: WorkerJob[];
     private ts: Timer;
     private workerMgr: WorkerManagerService;
-    private updateDiff: number;
+    private expInfoTB: ExperimentInfoTable;
+    private database: DatabaseCom;
     constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
         this.app = app;
-        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 5};
+        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 3};
         this.jobList = new Array<WorkerJob>();
         this.workerMgr = this.app.get('WorkerManagement');
     }
@@ -123,14 +126,16 @@ export class JobManageService extends EventEmitter implements IComponent{
     // }
     start(cb: () => void) {
         //这里获得workerMgr
+        this.database = this.app.get('DatabaseCom');
         this.workerMgr.on(JobWorkerEvent.workerCreated,this.onWorkerCreate.bind(this));
         this.workerMgr.on(JobWorkerEvent.workerInvalid,this.onWorkerInvalid.bind(this));
         process.nextTick(cb);
     }
 
     afterStartAll(){
+        this.expInfoTB = this.database.getTable(DBTableName.Experiment);
         this.addListener(WorkerJobEvent.jobFail,this.onJobFailed.bind(this));
-        this.ts = setInterval(this.update.bind(this),this.updateDiff);
+        this.ts = setInterval(this.update.bind(this),this.opts.updateDiff);
     }
     private sendMessage(job: JobInitArgs | WorkerJob,code: any,msg: any){
         let channelService = this.app.channelService;
@@ -190,7 +195,13 @@ export class JobManageService extends EventEmitter implements IComponent{
             fullJob.frontendId = job.frontendId;
             fullJob.jobType = job.jobType;
             fullJob.expId = job.expId;
-            fullJob.expPath = job.expPath;
+            let dbValue = await this.expInfoTB.getSource().findAll({
+                //attributes: ['AbsolutePath'],
+                where: {experimentId: job.expId}
+            });
+            for (let p of dbValue){
+                fullJob.expPath = p.AbsolutePath;
+            }
         }else if (job.jobType == JobType.JobType_Calculate){
         }else {
         }

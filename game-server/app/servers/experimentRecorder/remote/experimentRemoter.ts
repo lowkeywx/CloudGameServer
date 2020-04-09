@@ -1,5 +1,6 @@
 import {Application, FrontendSession, getLogger, RemoterClass} from 'pinus';
 import {ExperimentRecord, ExperimentService} from "../../../service/experimentService";
+import {ExperimentInfoCom} from "../../../components/experimentInfoCom";
 
 let logger = getLogger('pinus');
 
@@ -19,24 +20,17 @@ declare global {
 
 export class experimentRemoter {
     experimentsRecord: Map<string, ExperimentRecord>;
-    experimentService : ExperimentService;
-    experimentsList: string[];
-
+    experimentConditionMgr : ExperimentService;
+    experimentInfoMgr: ExperimentInfoCom;
     constructor(private app: Application) {
         this.experimentsRecord = new Map<string, ExperimentRecord>();
-        this.experimentService = this.app.get('experimentCondition');
-        this.experimentsList = new Array<string>();
-        this.experimentsList.push('tanks');
+        this.experimentConditionMgr = this.app.get('experimentCondition');
+        this.experimentInfoMgr = this.app.get('ExperimentInfoCom');
     }
     public async getAllExperimentBriefInfo(schoolId: string) {
-        if (schoolId){
-            //从数据库获取，根据学校id
-        }else {
-            //从数据库获取所有
-        }
         //这里暂时只存名字, 以后会丰富数据结构
-        logger.info('[getAllExperimentBriefInfo][expriment info list will be send.]');
-        return this.experimentsList;
+        logger.info('[getAllExperimentBriefInfo][experiment info list will be send.]');
+        return await this.experimentInfoMgr.getAllExpBriefInfoForSchool(schoolId);
     }
     public async IsMeetExperimentCondition(experimentId: string){
         if (!experimentId){
@@ -50,7 +44,7 @@ export class experimentRemoter {
             experiment.StartedCount = 0;
             this.experimentsRecord[experimentId] = experiment;
         }
-        return this.experimentService.checkExperimentCondition(this.experimentsRecord[experimentId]);
+        return this.experimentConditionMgr.checkExperimentCondition(this.experimentsRecord[experimentId]);
 
     }
     public async addExperimentStartRecord(experimentId: string){
