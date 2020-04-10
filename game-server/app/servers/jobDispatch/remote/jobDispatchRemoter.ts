@@ -24,7 +24,8 @@ export class jobDispatchRemoter{
     }
     //所有sid都应该改成uid, 因为一定时间以后sid会重置
     public async onClientClose(sessionId: number){
-        this.dispatcher.removeBySid(sessionId);
+        logger.info(`[onClientClose][收到客户端断开链接通知, 将清理任务数据]`);
+        await this.dispatcher.removeBySid(sessionId);
     }
 
 }

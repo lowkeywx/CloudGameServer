@@ -18,6 +18,8 @@ export enum WorkerJobEvent{
 export enum WorkerJobState {
     JobState_NotInit,
     JobState_Init,
+    JobState_Dispatch,
+    JobState_Receive,
     JobState_Ready,
     JobState_Doing,
     JobState_Finish,
@@ -34,11 +36,13 @@ export class JobInitArgs {
     }
     uid: string;
     frontendId: string;
+    jobServerId: string;
     sid: number;
     jobType: JobType;
     expId: string;
     //关于游戏程序路径放在哪里获取待定
     expPath: string;
+    state: WorkerJobState;
 }
 
 export class WorkerJob {
@@ -117,7 +121,7 @@ export class JobManageService extends EventEmitter implements IComponent{
     constructor(app: Application, opts ?: JobManagerServiceOptions) {
         super();
         this.app = app;
-        this.opts = opts || {maxJob: 2,updateDiff: 1000 * 3};
+        this.opts = opts || {maxJob: 2,updateDiff: 1000};
         this.jobList = new Array<WorkerJob>();
         this.workerMgr = this.app.get('WorkerManagement');
     }
