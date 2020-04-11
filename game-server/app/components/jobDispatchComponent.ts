@@ -65,13 +65,14 @@ export class JobDispatchComponent implements IComponent{
             logger.info(`[_doJob][任务队列为空!]`);
             return;
         }
-
+        let position = 0;
         for (let i = 0; i < this.jobs.length; i++){
             let jobArg = this.jobs[i];
             if (jobArg.state == WorkerJobState.JobState_Dispatch || jobArg.state == WorkerJobState.JobState_Receive) continue;
+            position++;
             if (jobArg.jobType == JobType.JobType_Experiment) {
                 if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,jobArg.expId)){
-                    this.showMessage(null,S2CMsg.maxJob,`您前面还有${i}人`,jobArg.frontendId,jobArg.uid,null);
+                    this.showMessage(null,S2CMsg.maxJob,`您当前排在第${position}位},共${i}人`,jobArg.frontendId,jobArg.uid,null);
                     continue;
                 }
                 logger.info(`[_doJob][条件检测已经通过]. 任务类型=${jobArg.jobType}, 任务关联的session=${jobArg.sid}`);
@@ -79,7 +80,7 @@ export class JobDispatchComponent implements IComponent{
             let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
             if (!bestServer){
                 logger.info(`[_doJob][没有找到最佳可用服务器`);
-                this.showMessage(null,S2CMsg.noIdleServer,`您前面还有${i}人`,jobArg.frontendId,jobArg.uid,null);
+                this.showMessage(null,S2CMsg.noIdleServer,`您当前排在第${position}位},共${i}人`,jobArg.frontendId,jobArg.uid,null);
                 continue;
             }
             await this.app.rpc.experimentRecorder.experimentRemoter.addExperimentStartRecord(null,jobArg.expId)
