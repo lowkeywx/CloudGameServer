@@ -40,7 +40,9 @@ export class JobDispatchComponent implements IComponent{
             let job = this.jobs[i];
             if (job.sid == sid){
                 logger.info(`[removeBySid][将清理任务初始化数据,sessionId=${sid}-${job.sid}, 接收服务器ID=${job.jobServerId}]`);
-                await this.app.rpc.job.jobRemoter.onClientClose.toServer(job.jobServerId,job.sid);
+                if(job.jobServerId){
+                    await this.app.rpc.job.jobRemoter.onClientClose.toServer(job.jobServerId,job.sid);
+                }
                 this.jobs.splice(i,1);
             }
         }
@@ -72,7 +74,7 @@ export class JobDispatchComponent implements IComponent{
             position++;
             if (jobArg.jobType == JobType.JobType_Experiment) {
                 if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,jobArg.expId)){
-                    this.showMessage(null,S2CMsg.maxJob,`您当前排在第${position}位},共${i}人`,jobArg.frontendId,jobArg.uid,null);
+                    this.showMessage(null,S2CMsg.maxJob,`您当前排在第${position}位},服务器在线总人数: ${this.jobs.length}人`,jobArg.frontendId,jobArg.uid,null);
                     continue;
                 }
                 logger.info(`[_doJob][条件检测已经通过]. 任务类型=${jobArg.jobType}, 任务关联的session=${jobArg.sid}`);
@@ -80,7 +82,7 @@ export class JobDispatchComponent implements IComponent{
             let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
             if (!bestServer){
                 logger.info(`[_doJob][没有找到最佳可用服务器`);
-                this.showMessage(null,S2CMsg.noIdleServer,`您当前排在第${position}位},共${i}人`,jobArg.frontendId,jobArg.uid,null);
+                this.showMessage(null,S2CMsg.noIdleServer,`您当前排在第${position}位},服务器在线总人数: ${this.jobs.length}人`,jobArg.frontendId,jobArg.uid,null);
                 continue;
             }
             await this.app.rpc.experimentRecorder.experimentRemoter.addExperimentStartRecord(null,jobArg.expId)

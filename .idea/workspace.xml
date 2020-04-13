@@ -4,9 +4,7 @@
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/connector/handler/entryHandler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/remote/jobDispatchRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/remote/jobDispatchRemoter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/jobManageService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/云渲染3.0架构图.xmind" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,6 +99,7 @@
       <workItem from="1586478947760" duration="11878000" />
       <workItem from="1586506521806" duration="1045000" />
       <workItem from="1586507934130" duration="3109000" />
+      <workItem from="1586738364428" duration="1672000" />
     </task>
     <servers />
   </component>
