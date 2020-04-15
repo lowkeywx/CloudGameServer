@@ -79,6 +79,10 @@ export class ExperimentService implements IComponent{
                 this.experimentsCondition[experiment.experimentId] = condition;
             }
         }
+        if (!condition){
+            logger.info(`[checkExperimentCondition][没有找到实验的限制条件对象.实验ID=${experiment.experimentId}]`);
+            return false;
+        }
         //如果限制请求次数为3的话, 协成< 3或者<=2;
         return experiment.StartedCount < condition.maxRunningNum;
         //这里运行时间的判断还有问题

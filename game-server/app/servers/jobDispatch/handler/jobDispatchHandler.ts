@@ -15,7 +15,7 @@ export class Handler {
         this.dispatcher = this.app.get('JobDispatchComponent');
     }
     async doJob(msg:any,session: FrontendSession){
-        if (typeof msg.jobType !== 'number') {
+        if (typeof msg.jobType !== 'number' || !msg.experimentId) {
             logger.info('[doJob][无效参数: jobType]');
             return {code: S2CMsg.invalidArgs_jobType};
         }
