@@ -60,7 +60,7 @@ export class JobDispatchComponent implements IComponent{
     private showMessage(route: string, msg: any, data: any, frontendId: string, uid: string, cb: (err?: Error, resp ?: any) => void){
         route = route || S2CEmitEvent.showInClient;
         let targets = {uid: uid,sid: frontendId};
-        this.app.channelService.apushMessageByUids(route,{code: msg,data: data},[targets],()=>{});
+        this.app.channelService.pushMessageByUids(route,{code: msg,data: data},[targets],()=>{});
     }
     private async _doJob(){
         if (!this.jobs.length) {

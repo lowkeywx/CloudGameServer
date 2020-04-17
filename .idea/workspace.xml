@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/game-server/app/components/jobServerRecorderCom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/components/experimentInfoCom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/experimentInfoCom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +111,7 @@
       <workItem from="1586826525518" duration="3385000" />
       <workItem from="1586912874570" duration="975000" />
       <workItem from="1586927720357" duration="423000" />
+      <workItem from="1587101101936" duration="6766000" />
     </task>
     <servers />
   </component>
@@ -122,10 +131,11 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2691" y="245" key="#com.intellij.ide.macro.MacrosDialog/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586501502286" />
-    <state x="2511" y="129" key="CommitChangelistDialog2" timestamp="1586428921323">
-      <screen x="1982" y="0" width="1858" height="1080" />
+    <state x="591" y="129" key="CommitChangelistDialog2" timestamp="1587106006823">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="2511" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586428921323" />
+    <state x="591" y="129" key="CommitChangelistDialog2/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1587106006823" />
     <state width="402" height="466" key="DebuggerActiveHint" timestamp="1586501712259">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
@@ -203,19 +213,20 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586913311141" />
-    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1586927745517">
-      <screen x="1982" y="0" width="1858" height="1080" />
+    <state x="1010" y="305" width="647" height="524" key="find.popup" timestamp="1587106150974">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586927745517" />
-    <state x="1010" y="305" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1586509566241" />
+    <state x="1010" y="305" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1587106150974" />
     <state x="2567" y="250" key="run.anything.popup" timestamp="1586501468489">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2567" y="250" key="run.anything.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586501468489" />
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1585290829442">
-      <screen x="1982" y="0" width="1858" height="1080" />
+    <state x="654" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1587103728195">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585290829442" />
+    <state x="654" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1587103728195" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

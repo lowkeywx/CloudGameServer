@@ -1,8 +1,8 @@
 import {IComponent} from "pinus/lib/interfaces/IComponent";
 import {Application, getLogger} from 'pinus';
 import Timer = NodeJS.Timer;
-import {JobServerRecord, JobServerState} from "../servers/jobServerRecorder/remote/jobServerRecorderRemoter";
 import {JobManageService} from "../service/jobManageService";
+import {JobServerRecord, JobServerState} from "./jobServerRecorderCom";
 
 let logger = getLogger('pinus');
 
@@ -21,14 +21,14 @@ export class JobServerComponent implements IComponent {
     constructor(app: Application, opts: JobServerCmOptions) {
         this.app = app;
         this.opts = opts || {updateDiff: 1000 * 0.9};
+        app.set('JobServerComponent', this, true);
         this.record = new JobServerRecord(this.app.serverId);
         this.jobMgr = this.app.get('JobManagement');
-        app.set('JobServerComponent', this, true);
     }
 
-    // beforeStart(cb: () => void){
-    //
-    // }
+    beforeStart(cb: () => void){
+        process.nextTick(cb);
+    }
     start(cb: () => void) {
         //这里获得workerMgr
         process.nextTick(cb);
@@ -49,6 +49,6 @@ export class JobServerComponent implements IComponent {
         }else if (this.jobMgr.isOverload()){
             this.record.state = JobServerState.JobStatus_Overload;
         }
-        this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo(null,this.record);
+        this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.RecordServerInfo(null,this.record).then(()=>{});
     }
 }

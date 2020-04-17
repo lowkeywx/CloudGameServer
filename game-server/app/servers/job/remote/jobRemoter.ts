@@ -1,14 +1,10 @@
 import {Application, FrontendSession, getLogger, RemoterClass} from 'pinus';
-import {JobServerRecord, JobServerState} from "../../jobServerRecorder/remote/jobServerRecorderRemoter";
 import {
-    ExperimentJob,
     JobInitArgs,
     JobManageService,
     WorkerJob,
-    WorkerJobEvent
 } from "../../../service/jobManageService";
 import {S2CEmitEvent, S2CMsg} from "../../../../../shared/messageCode";
-import Timer = NodeJS.Timer;
 import {JobServerComponent} from "../../../components/jobServerComponent";
 
 let logger = getLogger('pinus');

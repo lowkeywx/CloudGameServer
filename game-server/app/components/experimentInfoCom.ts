@@ -34,19 +34,14 @@ export class ExperimentInfoCom implements IComponent{
     }
 
     public async getAllExpBriefInfoForSchool(schoolId: string){
-        let expList = await this.expInfoTB.getSource().findAll();
+        let expList = await this.expInfoTB.getSource().findAll({
+            where: {schoolEntry: schoolId}
+        });
         let expNameArray = new Array<any>();
         for(let e of expList){
             logger.info(`[getAllExpBriefInfoForSchool][实验ID=${e.experimentId},实验路径=${e.AbsolutePath}]`);
             expNameArray.push(e.experimentId);
         }
-        // expList.every((exp)=>{
-        //     logger.info(`[getAllExpBriefInfoForSchool][实验ID=${exp.experimentId},实验路径=${exp.AbsolutePath}]`);
-        //     let info: Map<string,string> = new Map<string,string>();
-        //     info.set('experimentId',exp.experimentId);
-        //     info.set('AbsolutePath',exp.AbsolutePath);
-        //     expNameArray.push(info);
-        // });
         return expNameArray;
     }
 }

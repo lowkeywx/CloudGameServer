@@ -8,6 +8,7 @@ import {JobDispatchComponent} from "./app/components/jobDispatchComponent";
 import {JobServerComponent} from "./app/components/jobServerComponent";
 import {ExperimentInfoCom} from "./app/components/experimentInfoCom";
 import {DatabaseCom} from "./app/components/databaseCom";
+import {JobServerRecorderCom} from "./app/components/jobServerRecorderCom";
 
 /**
  *  替换全局Promise
@@ -56,6 +57,9 @@ app.configure('production|development', 'experimentRecorder', function () {
 
 app.configure('production|development', 'jobDispatch', function () {
     app.load(JobDispatchComponent);
+});
+app.configure('production|development', 'jobServerRecorder', function () {
+    app.load(JobServerRecorderCom);
 });
 
 // start app

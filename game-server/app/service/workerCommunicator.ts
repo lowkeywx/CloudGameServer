@@ -89,7 +89,7 @@ export class WorkerCommunicator extends EventEmitter implements IComponent{
         }
         worker.setProcessId(call.request.renderProcessId);
         worker.setState(call.request.renderStatus);
-        logger.info(`[ReportRenderInfo][worker id : ${workerId}], state : ${call.request.renderStatus}`);
+        //logger.info(`[ReportRenderInfo][worker id : ${workerId}], state : ${call.request.renderStatus}`);
         callback(null,{'code': 1});
     }
 }
