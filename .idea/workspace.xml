@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobDispatch/handler/jobDispatchHandler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/experimentService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +101,8 @@
       <workItem from="1586745369241" duration="191000" />
       <workItem from="1586746087859" duration="300000" />
       <workItem from="1586826525518" duration="3385000" />
+      <workItem from="1586912874570" duration="975000" />
+      <workItem from="1586927720357" duration="423000" />
     </task>
     <servers />
   </component>
@@ -199,14 +199,14 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state width="1837" height="364" key="GridCell.Tab.3.right/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586746388101" />
-    <state x="2632" y="281" width="582" height="524" key="StructurePopup" timestamp="1586500785735">
+    <state x="2632" y="281" width="582" height="524" key="StructurePopup" timestamp="1586913311141">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586500785735" />
-    <state x="1010" y="305" width="647" height="524" key="find.popup" timestamp="1586509566241">
-      <screen x="62" y="0" width="1858" height="1080" />
+    <state x="2632" y="281" width="582" height="524" key="StructurePopup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586913311141" />
+    <state x="2587" y="278" width="647" height="524" key="find.popup" timestamp="1586927745517">
+      <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586480355580" />
+    <state x="2587" y="278" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586927745517" />
     <state x="1010" y="305" width="647" height="524" key="find.popup/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1586509566241" />
     <state x="2567" y="250" key="run.anything.popup" timestamp="1586501468489">
       <screen x="1982" y="0" width="1858" height="1080" />
