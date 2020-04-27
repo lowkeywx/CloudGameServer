@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70471759-c1fe-4eb0-a410-fce529b4feda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/game-server/app/components/jobServerRecorderCom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/experimentInfoCom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/experimentInfoCom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobDispatchComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/components/jobServerComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/job/remote/jobRemoter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/servers/jobServerRecorder/remote/jobServerRecorderRemoter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerCommunicator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game-server/app/service/workerManageService.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +40,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="D:\CloudGame\CloudGameServer\game-server\node_modules\typescript\lib" />
   </component>
   <component name="RunManager">
@@ -111,7 +107,9 @@
       <workItem from="1586826525518" duration="3385000" />
       <workItem from="1586912874570" duration="975000" />
       <workItem from="1586927720357" duration="423000" />
-      <workItem from="1587101101936" duration="6766000" />
+      <workItem from="1587101101936" duration="10014000" />
+      <workItem from="1587608638777" duration="323000" />
+      <workItem from="1587952386808" duration="6195000" />
     </task>
     <servers />
   </component>
@@ -209,6 +207,10 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state width="1837" height="364" key="GridCell.Tab.3.right/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586746388101" />
+    <state x="2412" y="182" key="SettingsEditor" timestamp="1587608892060">
+      <screen x="1982" y="0" width="1858" height="1080" />
+    </state>
+    <state x="2412" y="182" key="SettingsEditor/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1587608892060" />
     <state x="2632" y="281" width="582" height="524" key="StructurePopup" timestamp="1586913311141">
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
@@ -222,10 +224,10 @@
       <screen x="1982" y="0" width="1858" height="1080" />
     </state>
     <state x="2567" y="250" key="run.anything.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1586501468489" />
-    <state x="654" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1587103728195">
-      <screen x="62" y="0" width="1858" height="1080" />
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1587608790164">
+      <screen x="1982" y="0" width="1858" height="1080" />
     </state>
-    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1585290829442" />
+    <state x="2574" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@1982.0.1858.1080" timestamp="1587608790164" />
     <state x="654" y="235" width="672" height="678" key="search.everywhere.popup/1982.0.1858.1080/62.0.1858.1080@62.0.1858.1080" timestamp="1587103728195" />
   </component>
   <component name="XDebuggerManager">

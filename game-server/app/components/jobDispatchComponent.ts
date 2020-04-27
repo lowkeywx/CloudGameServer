@@ -82,7 +82,7 @@ export class JobDispatchComponent implements IComponent{
             let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
             if (!bestServer){
                 logger.info(`[_doJob][没有找到最佳可用服务器`);
-                this.showMessage(null,S2CMsg.noIdleServer,`您当前排在第${position}位},服务器在线总人数: ${this.jobs.length}人`,jobArg.frontendId,jobArg.uid,null);
+                this.showMessage(null,S2CMsg.noIdleServer,`您当前排在第${position}位,服务器在线总人数: ${this.jobs.length}人`,jobArg.frontendId,jobArg.uid,null);
                 continue;
             }
             await this.app.rpc.experimentRecorder.experimentRemoter.addExperimentStartRecord(null,jobArg.expId)
@@ -94,33 +94,6 @@ export class JobDispatchComponent implements IComponent{
             await this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, jobArg);
             jobArg.state = WorkerJobState.JobState_Receive;
         }
-
-
-    }
-    private async oldDoJobLogic(){
-        let jobArgs: JobInitArgs = this.jobs[0];
-        this.jobs.shift();
-        //应该提供一个conditionService以后再完善
-        //类型判断封装哼一个函数吧
-        if (jobArgs.jobType == JobType.JobType_Experiment) {
-            if (!await this.app.rpc.experimentRecorder.experimentRemoter.IsMeetExperimentCondition(null,jobArgs.expId)){
-                this.showMessage(null,S2CMsg.maxJob,'',jobArgs.frontendId,jobArgs.uid,null);
-                this.jobs.push(jobArgs);
-                return false;
-            }
-            logger.info(`[_doJob][条件检测已经通过]. 任务类型=${jobArgs.jobType}, 任务关联的session=${jobArgs.sid}`);
-        }
-        let bestServer = await this.app.rpc.jobServerRecorder.jobServerRecorderRemoter.getBestServer(null);
-        if (!bestServer){
-            logger.info(`[doJob][没有找到最佳可用服务器`);
-            this.showMessage(null,S2CMsg.noIdleServer,'',jobArgs.frontendId,jobArgs.uid,null);
-            this.jobs.push(jobArgs);
-            return false;
-        }
-        await this.app.rpc.experimentRecorder.experimentRemoter.addExperimentStartRecord(null,jobArgs.expId)
-        //push to queue
-        logger.info(`[doJob][找到最佳可用服务器, ID: ${bestServer}]`);
-        await this.app.rpc.job.jobRemoter.doJob.toServer(bestServer, jobArgs);
     }
 }
 

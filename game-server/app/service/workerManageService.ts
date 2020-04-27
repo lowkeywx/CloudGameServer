@@ -21,7 +21,7 @@ enum WorkerState {
 export class JobWorker {
     constructor(manager: WorkerManagerService) {
         //this.appPath = 'E:\\Z_DOWNLOAD\\tanks\\tanks.exe';
-        this.appPath = "D:\\VSProject\\AppAgent\\output\\x64\\Debug\\AppAgent.exe";
+        this.appPath = "D:\\VSProject\\AppAgent\\output\\x64\\Debug\\AppAgent64.exe";
         this.workPath = "cd D:\\VSProject\\AppAgent\\output\\x64\\Debug";
         this.state = WorkerState.WorkerState_Init;
         this.workerMgr = manager;
@@ -47,8 +47,8 @@ export class JobWorker {
         this.state = WorkerState.WorkerState_Start;
         child_process.exec(`${this.appPath} -j ${this.job.jobId} -w ${this.workerId}`,function (error,stdOut,stdErr) {
             logger.log('========================= :\n\n',error);
-            // logger.log('========================= :\n\n',stdOut);
-            // logger.log('========================= :\n\n',stdErr);
+             logger.log('========================= :\n\n',stdOut);
+             logger.log('========================= :\n\n',stdErr);
         }); //这里除了端口id之外还可以发送jobid
         this.startTime = Date.now();
         this.lastChangeTime = this.startTime;

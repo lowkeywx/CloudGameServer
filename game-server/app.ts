@@ -50,9 +50,9 @@ app.configure('production|development', 'job', function () {
 });
 
 app.configure('production|development', 'experimentRecorder', function () {
+    app.load(DatabaseCom);
     app.load(ExperimentCondition);
     app.load(ExperimentInfoCom);
-    app.load(DatabaseCom);
 });
 
 app.configure('production|development', 'jobDispatch', function () {
